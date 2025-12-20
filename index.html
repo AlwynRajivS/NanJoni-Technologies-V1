@@ -8,35 +8,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
 }
 
-/* HERO */
-.hero{padding:70px 16px 50px;text-align:center}
-.hero h1{
-  font-size:40px;
+/* HEADER */
+header{
+  padding:60px 16px 40px;
+  text-align:center;
+}
+header h1{
+  font-size:42px;
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
-.hero p{opacity:.9}
+header p{opacity:.9;margin-top:8px}
+
+/* LANGUAGE */
+.lang{
+  position:fixed;
+  top:16px;
+  right:16px;
+  background:#22c55e;
+  color:#000;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:600;
+  cursor:pointer;
+  z-index:1000;
+}
 
 /* SECTION */
-.section{padding:30px 16px 60px}
-.section h2{font-size:26px;margin-bottom:25px}
+.section{padding:20px 16px 60px;max-width:1200px;margin:auto}
+.section h2{font-size:26px;margin-bottom:20px}
 
 /* CARD */
 .card{
-  background:rgba(255,255,255,0.08);
-  border-radius:26px;
+  background:rgba(255,255,255,.08);
+  border-radius:24px;
   padding:16px;
-  margin-bottom:35px;
+  margin-bottom:32px;
   backdrop-filter:blur(14px);
-  box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
 /* CAROUSEL */
@@ -56,21 +72,21 @@ body{
   cursor:pointer;
 }
 
-/* CONTENT */
-.card h3{margin-top:18px;font-size:22px}
-.card p{margin-top:8px;font-size:14px;opacity:.85}
+/* TEXT */
+.card h3{margin-top:16px;font-size:22px}
+.card p{margin-top:8px;opacity:.85;font-size:14px}
 .tag{
   display:inline-block;
-  margin-top:12px;
-  padding:6px 16px;
-  border-radius:20px;
+  margin-top:10px;
   background:#22c55e;
   color:#000;
-  font-weight:600;
+  padding:6px 16px;
+  border-radius:20px;
   font-size:12px;
+  font-weight:600;
 }
 
-/* FULLSCREEN VIEWER */
+/* VIEWER */
 .viewer{
   position:fixed;
   inset:0;
@@ -79,170 +95,153 @@ body{
   align-items:center;
   justify-content:center;
   z-index:9999;
-  overflow:hidden;
 }
-
 .viewer img{
-  max-width:100%;
-  max-height:100%;
+  width:100vw;
+  height:100vh;
   object-fit:contain;
-  transition:transform .25s ease;
 }
 
 /* CONTROLS */
 .ctrl{
   position:absolute;
-  background:rgba(255,255,255,.18);
-  backdrop-filter:blur(6px);
-  border-radius:50%;
+  background:rgba(255,255,255,.2);
   width:44px;height:44px;
+  border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:22px;
   cursor:pointer;
-  user-select:none;
 }
-.close{top:20px;right:20px}
-.prev{left:14px}
-.next{right:14px}
+.close{top:16px;right:16px}
+.prev{left:16px}
+.next{right:16px}
 
-/* COUNTER */
-.counter{
+/* DOTS */
+.dots{
   position:absolute;
   bottom:20px;
-  background:rgba(255,255,255,.18);
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:13px;
+  display:flex;
+  gap:8px;
 }
+.dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:#777;
+}
+.dot.active{background:#22c55e}
 
-/* DESKTOP */
 @media(min-width:900px){
-  .section{max-width:1200px;margin:auto}
-  .hero h1{font-size:52px}
+  header h1{font-size:54px}
   .carousel img{flex:0 0 32%;height:240px}
 }
-
-/* FOOTER */
-footer{text-align:center;padding:20px;opacity:.6;font-size:13px}
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>NanJoni Technologies</h1>
-  <p>Premium Web Applications • Innovation Driven</p>
-</div>
+<div class="lang" onclick="toggleLang()">தமிழ்</div>
+
+<header>
+  <h1 id="title">NanJoni Technologies</h1>
+  <p id="subtitle">Premium Web Applications • Innovation Driven</p>
+</header>
 
 <div class="section">
-  <h2>Software Showcase</h2>
-
-  <div class="card">
-    <div class="carousel">
-      <img src="images/PDFMERGE1.jpg">
-      <img src="images/PDFMERGE2.jpg">
-    </div>
-    <h3>My Personal PDF Editor</h3>
-    <p>Modern PDF editor with merge, split & Excel conversion.</p>
-    <span class="tag">PDF Tool</span>
-  </div>
-
-  <div class="card">
-    <div class="carousel">
-      <img src="images/tool1.jpg">
-      <img src="images/tool2.jpg">
-      <img src="images/tool3.jpg">
-    </div>
-    <h3>Student Performance Tracker</h3>
-    <p>Smart analytics platform for coding performance.</p>
-    <span class="tag">EdTech Platform</span>
-  </div>
+  <h2 id="showcase">Software Showcase</h2>
+  <div id="cards"></div>
 </div>
 
-<footer>© 2025 NanJoni Technologies • Premium Startup UI</footer>
-
-<!-- VIEWER -->
+<!-- FULLSCREEN VIEWER -->
 <div class="viewer" id="viewer">
   <div class="ctrl close" onclick="closeViewer()">✕</div>
   <div class="ctrl prev" onclick="prevImg()">❮</div>
   <img id="viewerImg">
   <div class="ctrl next" onclick="nextImg()">❯</div>
-  <div class="counter" id="counter"></div>
+  <div class="dots" id="dots"></div>
 </div>
 
 <script>
-let images=[],current=0,slideTimer;
-let scale=1,startDist=0,lastScale=1;
-let img=document.getElementById("viewerImg");
+let lang="en";
 
-document.querySelectorAll(".carousel").forEach(car=>{
-  let imgs=car.querySelectorAll("img");
-  imgs.forEach((i,idx)=>{
-    i.onclick=()=>{
-      images=[...imgs].map(x=>x.src);
-      current=idx;
-      openViewer();
-    };
+/* AI DATA */
+const software=[
+{
+  tag:"PDF Tool",
+  en:{name:"My Personal PDF Editor",desc:"Modern PDF editor with merge, split & Excel conversion."},
+  ta:{name:"என் PDF எடிட்டர்",desc:"PDF கோப்புகளை இணைக்க, பிரிக்க மற்றும் Excel மாற்ற உதவும் கருவி."},
+  images:["images/PDFMERGE1.jpg","images/PDFMERGE2.jpg"]
+},
+{
+  tag:"EdTech",
+  en:{name:"Student Performance Tracker",desc:"Analytics platform for coding progress and rankings."},
+  ta:{name:"மாணவர் செயல்திறன் கண்காணிப்பு",desc:"கோடிங் முன்னேற்றம் மற்றும் தரவரிசை கண்காணிப்பு."},
+  images:["images/tool1.jpg","images/tool2.jpg","images/tool3.jpg"]
+}
+];
+
+const cards=document.getElementById("cards");
+
+/* GENERATE CARDS */
+function render(){
+  cards.innerHTML="";
+  software.forEach((s,i)=>{
+    cards.innerHTML+=`
+    <div class="card">
+      <div class="carousel">
+        ${s.images.map((img,j)=>`<img src="${img}" onclick="openViewer(${i},${j})">`).join("")}
+      </div>
+      <h3>${s[lang].name}</h3>
+      <p>${s[lang].desc}</p>
+      <span class="tag">${s.tag}</span>
+    </div>`;
   });
-});
+}
+render();
 
-function openViewer(){
-  resetZoom();
-  showImg();
+/* VIEWER */
+let imgs=[],idx=0,slide;
+
+function openViewer(si,ii){
+  imgs=software[si].images;
+  idx=ii;
   viewer.style.display="flex";
-  startSlideshow();
+  buildDots();
+  show();
+  auto();
+}
+function show(){
+  viewerImg.src=imgs[idx];
+  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active",i===idx));
+}
+function nextImg(){idx=(idx+1)%imgs.length;show();reset()}
+function prevImg(){idx=(idx-1+imgs.length)%imgs.length;show();reset()}
+function closeViewer(){viewer.style.display="none";clearInterval(slide)}
+
+function auto(){slide=setInterval(nextImg,3000)}
+function reset(){clearInterval(slide);auto()}
+
+function buildDots(){
+  dots.innerHTML="";
+  imgs.forEach((_,i)=>{
+    let d=document.createElement("div");
+    d.className="dot";
+    d.onclick=()=>{idx=i;show();reset()};
+    dots.appendChild(d);
+  });
 }
 
-function closeViewer(){
-  viewer.style.display="none";
-  clearInterval(slideTimer);
-}
-
-function showImg(){
-  img.src=images[current];
-  counter.innerText=`${current+1} / ${images.length}`;
-}
-
-function nextImg(){current=(current+1)%images.length;manual()}
-function prevImg(){current=(current-1+images.length)%images.length;manual()}
-function manual(){resetZoom();showImg();restartSlideshow()}
-
-function startSlideshow(){
-  slideTimer=setInterval(()=>nextImg(),3000);
-}
-function restartSlideshow(){
-  clearInterval(slideTimer);
-  startSlideshow();
-}
-
-/* PINCH ZOOM */
-viewer.addEventListener("touchstart",e=>{
-  if(e.touches.length===2){
-    startDist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    lastScale=scale;
-  }
-});
-
-viewer.addEventListener("touchmove",e=>{
-  if(e.touches.length===2){
-    let dist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
-    img.style.transform=`scale(${scale})`;
-  }
-});
-
-img.ondblclick=resetZoom;
-function resetZoom(){
-  scale=1;
-  img.style.transform="scale(1)";
+/* LANGUAGE */
+function toggleLang(){
+  lang=lang==="en"?"ta":"en";
+  document.querySelector(".lang").innerText=lang==="en"?"தமிழ்":"English";
+  title.innerText=lang==="en"?"NanJoni Technologies":"நான்ஜோனி டெக்னாலஜிஸ்";
+  subtitle.innerText=lang==="en"?
+    "Premium Web Applications • Innovation Driven":
+    "உயர்தர வலை பயன்பாடுகள் • புதுமை சார்ந்தது";
+  showcase.innerText=lang==="en"?"Software Showcase":"மென்பொருள் காட்சிப்படுத்தல்";
+  render();
 }
 </script>
 
