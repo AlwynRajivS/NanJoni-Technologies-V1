@@ -8,12 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
 /* BACKGROUND */
 body{
@@ -28,196 +23,265 @@ body{
 }
 .header h1{
   font-size:40px;
-  font-weight:700;
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
-.header p{
-  margin-top:10px;
-  opacity:.9;
-}
+.header p{opacity:.9;margin-top:8px}
 
 /* SECTION */
 .section{
   padding:20px 16px 60px;
+  max-width:1100px;
+  margin:auto;
 }
-.section h2{
-  font-size:26px;
-  margin-bottom:24px;
-}
+.section h2{font-size:26px;margin-bottom:24px}
 
 /* CARD */
 .card{
-  background:rgba(255,255,255,0.08);
-  border-radius:26px;
+  background:rgba(255,255,255,.08);
+  border-radius:24px;
   padding:16px;
   margin-bottom:36px;
   backdrop-filter:blur(14px);
   box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
-/* AUTO SLIDER */
-.auto-slider{
+/* SLIDER */
+.slider{
   position:relative;
-  width:100%;
   height:240px;
-  border-radius:20px;
+  border-radius:18px;
   overflow:hidden;
   background:#000;
 }
-
-.auto-slider img{
+.slider img{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:contain;   /* FULL IMAGE */
+  object-fit:contain;
   opacity:0;
-  transition:opacity 1s ease;
+  transition:opacity .6s;
+  cursor:zoom-in;
+  will-change:opacity;
 }
-
-.auto-slider img.active{
-  opacity:1;
-}
+.slider img.active{opacity:1}
 
 /* DOTS */
 .dots{
   display:flex;
   justify-content:center;
   gap:8px;
-  margin-top:12px;
+  margin:12px 0;
 }
-
 .dot{
-  width:10px;
-  height:10px;
+  width:10px;height:10px;
   border-radius:50%;
   background:#6b7280;
   cursor:pointer;
-  transition:.3s;
 }
+.dot.active{background:#22c55e}
 
-.dot.active{
-  background:#22c55e;
-  transform:scale(1.2);
-}
-
-/* CONTENT */
-.card h3{
-  margin-top:16px;
-  font-size:22px;
-}
-.card p{
-  margin-top:8px;
-  font-size:14px;
-  opacity:.85;
-  line-height:1.6;
-}
-
+/* TEXT */
+.card h3{font-size:22px;margin-top:10px}
+.card p{font-size:14px;opacity:.85;margin-top:6px;line-height:1.6}
 .tag{
   display:inline-block;
-  margin-top:12px;
-  padding:6px 18px;
-  border-radius:20px;
+  margin-top:10px;
+  padding:6px 16px;
   background:#22c55e;
   color:#000;
-  font-weight:600;
+  border-radius:20px;
   font-size:12px;
+  font-weight:600;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.modal-content{
+  background:#020617;
+  border-radius:18px;
+  max-width:92vw;
+  max-height:92vh;
+  padding:16px;
+  overflow:hidden;
+}
+.modal img{
+  width:100%;
+  max-height:60vh;
+  object-fit:contain;
+  touch-action:none;
+  transform-origin:center;
+  transition:transform .15s;
+}
+.modal p{
+  margin-top:12px;
+  font-size:14px;
+  opacity:.85;
+}
+.close{
+  position:absolute;
+  top:20px;
+  right:20px;
+  background:#22c55e;
+  color:#000;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-weight:700;
 }
 
 /* DESKTOP */
 @media(min-width:900px){
-  .section{
-    max-width:1100px;
-    margin:auto;
-  }
+  .slider{height:300px}
   .header h1{font-size:52px}
-  .auto-slider{height:300px}
-}
-
-/* FOOTER */
-footer{
-  text-align:center;
-  padding:20px;
-  opacity:.6;
-  font-size:13px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <h1>NanJoni Technologies</h1>
   <p>Premium Web Applications • Innovation Driven</p>
 </div>
 
-<!-- SHOWCASE -->
 <div class="section">
   <h2>Software Showcase</h2>
-
-  <!-- SOFTWARE CARD -->
-  <div class="card">
-
-    <!-- SLIDER -->
-    <div class="auto-slider">
-      <img src="images/PDFMERGE1.jpg" class="active">
-      <img src="images/PDFMERGE2.jpg">
-      <img src="images/PDFMERGE3.jpg">
-    </div>
-
-    <!-- DOTS -->
-    <div class="dots"></div>
-
-    <!-- CONTENT -->
-    <h3>My Personal PDF Editor</h3>
-    <p>
-      A modern, mobile-friendly PDF editor that supports PDF merge,
-      split, preview, zoom, and PDF to Excel conversion with a clean,
-      professional user interface.
-    </p>
-
-    <span class="tag">PDF Tool</span>
-  </div>
-
+  <div id="cards"></div>
 </div>
 
-<footer>
-  © 2025 NanJoni Technologies
-</footer>
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="close" onclick="closeModal()">✕</div>
+  <div class="modal-content">
+    <img id="modalImg">
+    <p id="modalDesc"></p>
+  </div>
+</div>
 
-<!-- SCRIPT -->
 <script>
-document.querySelectorAll(".card").forEach(card=>{
-  const imgs = card.querySelectorAll(".auto-slider img");
-  const dotsContainer = card.querySelector(".dots");
-  let index = 0;
+/* DATA */
+const software=[
+{
+  name:"My Personal PDF Editor",
+  desc:"Modern PDF editor with merge, split & Excel conversion.",
+  tag:"PDF Tool",
+  images:[
+    {src:"images/PDFMERGE1.jpg",desc:"PDF merge and split interface"},
+    {src:"images/PDFMERGE2.jpg",desc:"PDF to Excel conversion preview"},
+    {src:"images/PDFMERGE3.jpg",desc:"Mobile-friendly editor UI"}
+  ]
+},
+{
+  name:"Student Performance Tracker",
+  desc:"Track coding progress, analytics and rankings.",
+  tag:"EdTech",
+  images:[
+    {src:"images/tool1.jpg",desc:"Student dashboard"},
+    {src:"images/tool2.jpg",desc:"Leaderboard analytics"},
+    {src:"images/tool3.jpg",desc:"Admin monitoring panel"}
+  ]
+}
+];
 
-  /* CREATE DOTS */
+const cards=document.getElementById("cards");
+
+/* BUILD CARDS */
+software.forEach((s)=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <div class="slider">
+      ${s.images.map((i,j)=>`
+        <img src="${i.src}" loading="lazy" ${j===0?'class="active"':''}
+        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">`).join("")}
+    </div>
+    <div class="dots"></div>
+    <h3>${s.name}</h3>
+    <p>${s.desc}</p>
+    <span class="tag">${s.tag}</span>
+  `;
+  cards.appendChild(card);
+
+  const imgs=card.querySelectorAll(".slider img");
+  const dots=card.querySelector(".dots");
+  let idx=0;
+
   imgs.forEach((_,i)=>{
-    const dot = document.createElement("div");
-    dot.className = "dot" + (i===0 ? " active" : "");
-    dot.onclick = ()=>{
-      imgs[index].classList.remove("active");
-      dotsContainer.children[index].classList.remove("active");
-      index = i;
-      imgs[index].classList.add("active");
-      dotsContainer.children[index].classList.add("active");
-    };
-    dotsContainer.appendChild(dot);
+    const d=document.createElement("div");
+    d.className="dot"+(i===0?" active":"");
+    d.onclick=()=>change(i);
+    dots.appendChild(d);
   });
 
-  /* AUTO SLIDE */
-  setInterval(()=>{
-    imgs[index].classList.remove("active");
-    dotsContainer.children[index].classList.remove("active");
-    index = (index + 1) % imgs.length;
-    imgs[index].classList.add("active");
-    dotsContainer.children[index].classList.add("active");
-  },3000);
+  function change(i){
+    imgs[idx].classList.remove("active");
+    dots.children[idx].classList.remove("active");
+    idx=i;
+    imgs[idx].classList.add("active");
+    dots.children[idx].classList.add("active");
+  }
+
+  setInterval(()=>change((idx+1)%imgs.length),3000);
 });
+
+/* MODAL + PINCH ZOOM */
+let scale=1,startDist=0,lastScale=1;
+const modal=document.getElementById("modal");
+const modalImg=document.getElementById("modalImg");
+const modalDesc=document.getElementById("modalDesc");
+
+function openModal(src,desc){
+  modal.style.display="flex";
+  modalImg.src=src;
+  modalDesc.innerText=desc;
+  resetZoom();
+}
+function closeModal(){
+  modal.style.display="none";
+}
+
+modalImg.addEventListener("touchstart",e=>{
+  if(e.touches.length===2){
+    startDist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    lastScale=scale;
+  }
+});
+
+modalImg.addEventListener("touchmove",e=>{
+  if(e.touches.length===2){
+    let dist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
+    modalImg.style.transform=`scale(${scale})`;
+  }
+});
+
+modalImg.ondblclick=resetZoom;
+
+function resetZoom(){
+  scale=1;
+  modalImg.style.transform="scale(1)";
+}
 </script>
 
 </body>
