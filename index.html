@@ -9,62 +9,89 @@
 
 <style>
 :root{
+  --accent:#22c55e;
   --glass:rgba(255,255,255,.08);
   --stroke:rgba(255,255,255,.15);
-  --accent:#22c55e;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
 body{
-  background:
-    radial-gradient(circle at 20% 0%,#2563eb33,transparent 40%),
-    radial-gradient(circle at 80% 10%,#22c55e22,transparent 45%),
-    #020617;
+  background:#020617;
   color:#fff;
   overflow-x:hidden;
 }
 
-/* ===== HERO ===== */
-.header{
-  padding:80px 16px 50px;
-  text-align:center;
+/* ================= AI BACKGROUND ================= */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-1;
 }
-.header h1{
-  font-size:clamp(32px,5vw,46px);
+
+/* ================= HERO ================= */
+.hero{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+}
+.hero h1{
+  font-size:clamp(34px,6vw,64px);
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
-.header p{opacity:.85;margin-top:8px}
+.hero p{
+  opacity:.85;
+  margin-top:10px;
+  font-size:18px;
+}
 
-/* ===== SECTION ===== */
+/* ================= METRICS ================= */
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:20px;
+  max-width:1000px;
+  margin:60px auto;
+  padding:0 16px;
+}
+.metric{
+  background:var(--glass);
+  border:1px solid var(--stroke);
+  border-radius:20px;
+  padding:24px;
+  text-align:center;
+}
+.metric h2{font-size:36px;color:var(--accent)}
+.metric p{opacity:.8}
+
+/* ================= SHOWCASE ================= */
 .section{
   max-width:1200px;
   margin:auto;
-  padding:20px 16px 80px;
+  padding:80px 16px;
 }
 .section h2{
-  font-size:28px;
-  margin-bottom:32px;
+  font-size:32px;
+  margin-bottom:40px;
 }
 
-/* ===== CARD ===== */
+/* CARD */
 .card{
   background:linear-gradient(180deg,var(--glass),transparent);
   border:1px solid var(--stroke);
   border-radius:28px;
-  padding:20px;
-  margin-bottom:48px;
-  box-shadow:0 40px 90px rgba(0,0,0,.6);
-  backdrop-filter:blur(18px);
-  transform:translateY(20px);
-  opacity:0;
-  animation:fadeUp .9s ease forwards;
+  padding:22px;
+  margin-bottom:50px;
+  backdrop-filter:blur(16px);
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+  transition:.3s;
 }
-@keyframes fadeUp{
-  to{transform:none;opacity:1}
-}
+.card:hover{transform:translateY(-6px)}
 
 .front{
   display:flex;
@@ -72,8 +99,25 @@ body{
   gap:20px;
 }
 
-/* ===== MEDIA ===== */
-.media{width:100%}
+/* SLIDER */
+.slider{
+  aspect-ratio:16/9;
+  border-radius:22px;
+  overflow:hidden;
+  position:relative;
+}
+.slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:.7s;
+}
+.slide.active{opacity:1}
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
 /* DOTS */
 .dots{
@@ -88,44 +132,13 @@ body{
 }
 .dot.active{background:var(--accent)}
 
-/* SLIDER */
-.slider{
-  position:relative;
-  width:100%;
-  aspect-ratio:16/9;
-  border-radius:22px;
-  overflow:hidden;
-}
-.slide{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  transform:scale(1.05);
-  transition:.8s cubic-bezier(.4,0,.2,1);
-}
-.slide.active{
-  opacity:1;
-  transform:scale(1);
-}
-.slide img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  cursor:zoom-in;
-}
-
 /* CONTENT */
 .content h3{font-size:24px}
-.content p{
-  font-size:14.5px;
-  opacity:.85;
-  line-height:1.65;
-  margin-top:6px;
-}
+.content p{opacity:.85;font-size:14.5px;line-height:1.6}
 .tag{
   display:inline-block;
   margin-top:12px;
-  padding:6px 18px;
+  padding:6px 16px;
   background:linear-gradient(90deg,#22c55e,#4ade80);
   color:#000;
   border-radius:20px;
@@ -133,127 +146,132 @@ body{
   font-weight:600;
 }
 
-/* ===== FULLSCREEN VIEWER ===== */
-.viewer{
-  position:fixed;
-  inset:0;
-  background:#000c;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:100;
-}
-.viewer img{
-  max-width:95%;
-  max-height:95%;
-}
-.viewer.active{display:flex}
-
-/* MOBILE */
-@media(max-width:600px){
-  .slider{aspect-ratio:4/3}
-}
-
 /* DESKTOP */
 @media(min-width:900px){
   .front{flex-direction:row;align-items:center}
-  .media{flex:0 0 55%}
-  .content{flex:0 0 45%;padding-left:24px}
+  .slider{flex:0 0 55%}
+  .content{flex:0 0 45%;padding-left:26px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>NanJoni Technologies</h1>
-  <p>Premium Web Applications • Innovation Driven</p>
+<canvas id="bg"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1>NanJoni Technologies</h1>
+    <p>Enterprise-grade Digital Products • AI-Driven Innovation</p>
+  </div>
+</section>
+
+<!-- METRICS -->
+<div class="metrics">
+  <div class="metric"><h2 data-count="25">0</h2><p>Products Built</p></div>
+  <div class="metric"><h2 data-count="1200">0</h2><p>Active Users</p></div>
+  <div class="metric"><h2 data-count="18">0</h2><p>Institutions Served</p></div>
+  <div class="metric"><h2 data-count="6">0</h2><p>Awards</p></div>
 </div>
 
-<div class="section">
+<!-- SHOWCASE -->
+<section class="section">
   <h2>Software Showcase</h2>
-
-  <!-- CARD 1 -->
-  <div class="card">
-    <div class="front">
-      <div class="media">
-        <div class="dots"></div>
-        <div class="slider">
-          <div class="slide active"><img src="images/PDFMERGE1.jpg"></div>
-          <div class="slide"><img src="images/PDFMERGE2.jpg"></div>
-          <div class="slide"><img src="images/PDFMERGE3.jpg"></div>
-        </div>
-      </div>
-      <div class="content">
-        <h3>My Personal PDF Editor</h3>
-        <p>
-          A premium PDF workspace enabling merge, split, preview and
-          Excel conversion with enterprise-grade UX.
-        </p>
-        <span class="tag">PDF Tool</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- CARD 2 -->
-  <div class="card">
-    <div class="front">
-      <div class="media">
-        <div class="dots"></div>
-        <div class="slider">
-          <div class="slide active"><img src="images/tool1.jpg"></div>
-          <div class="slide"><img src="images/tool2.jpg"></div>
-          <div class="slide"><img src="images/tool3.jpg"></div>
-        </div>
-      </div>
-      <div class="content">
-        <h3>Student Performance Tracker</h3>
-        <p>
-          A data-driven analytics platform visualizing daily coding
-          progress, rankings and insights.
-        </p>
-        <span class="tag">EdTech Platform</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FULLSCREEN IMAGE VIEW -->
-<div class="viewer" onclick="this.classList.remove('active')">
-  <img>
-</div>
+  <div id="showcase"></div>
+</section>
 
 <script>
-document.querySelectorAll(".card").forEach(card=>{
-  const slides=card.querySelectorAll(".slide");
-  const dotsBox=card.querySelector(".dots");
-  let i=0;
-
-  slides.forEach((_,n)=>{
-    const d=document.createElement("div");
-    d.className="dot"+(n==0?" active":"");
-    d.onclick=()=>go(n);
-    dotsBox.appendChild(d);
-  });
-  const dots=dotsBox.querySelectorAll(".dot");
-
-  function go(n){
-    slides[i].classList.remove("active");
-    dots[i].classList.remove("active");
-    i=n;
-    slides[i].classList.add("active");
-    dots[i].classList.add("active");
+/* ================= AI BACKGROUND ================= */
+const c=document.getElementById("bg"),x=c.getContext("2d");
+function resize(){c.width=innerWidth;c.height=innerHeight}
+addEventListener("resize",resize);resize();
+let t=0;
+function draw(){
+  x.clearRect(0,0,c.width,c.height);
+  for(let i=0;i<80;i++){
+    let y=Math.sin(i+t)*40+c.height/2;
+    x.fillStyle="#22c55e22";
+    x.beginPath();
+    x.arc((i*50+t*10)%c.width,y,2,0,7);
+    x.fill();
   }
+  t+=.01;requestAnimationFrame(draw);
+}
+draw();
 
-  setInterval(()=>go((i+1)%slides.length),3500);
+/* ================= METRIC COUNTER ================= */
+document.querySelectorAll("[data-count]").forEach(el=>{
+  let max=+el.dataset.count;
+  let n=0;
+  let i=setInterval(()=>{
+    n+=Math.ceil(max/60);
+    if(n>=max){n=max;clearInterval(i)}
+    el.textContent=n;
+  },30);
+});
 
-  slides.forEach(s=>{
-    s.onclick=()=>{
-      document.querySelector(".viewer img").src=
-        s.querySelector("img").src;
-      document.querySelector(".viewer").classList.add("active");
-    }
+/* ================= JSON DATA ================= */
+const software=[
+{
+  title:"My Personal PDF Editor",
+  desc:"Enterprise-ready PDF merge, split and conversion platform.",
+  tag:"PDF Tool",
+  images:["PDFMERGE1.jpg","PDFMERGE2.jpg","PDFMERGE3.jpg"]
+},
+{
+  title:"Student Performance Tracker",
+  desc:"Analytics dashboard for coding and academic performance.",
+  tag:"EdTech",
+  images:["tool1.jpg","tool2.jpg","tool3.jpg"]
+}
+];
+
+const root=document.getElementById("showcase");
+
+/* ================= RENDER ================= */
+software.forEach(app=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <div class="front">
+      <div>
+        <div class="dots"></div>
+        <div class="slider">
+          ${app.images.map((i,j)=>`
+            <div class="slide ${j==0?"active":""}">
+              <img src="images/${i}">
+            </div>`).join("")}
+        </div>
+      </div>
+      <div class="content">
+        <h3>${app.title}</h3>
+        <p>${app.desc}</p>
+        <span class="tag">${app.tag}</span>
+      </div>
+    </div>`;
+  root.appendChild(card);
+
+  const slides=card.querySelectorAll(".slide");
+  const dots=card.querySelector(".dots");
+  let k=0;
+
+  slides.forEach((_,i)=>{
+    const d=document.createElement("div");
+    d.className="dot"+(i==0?" active":"");
+    d.onclick=()=>go(i);
+    dots.appendChild(d);
   });
+
+  const ds=dots.querySelectorAll(".dot");
+  function go(i){
+    slides[k].classList.remove("active");
+    ds[k].classList.remove("active");
+    k=i;
+    slides[k].classList.add("active");
+    ds[k].classList.add("active");
+  }
+  setInterval(()=>go((k+1)%slides.length),3500);
 });
 </script>
 
