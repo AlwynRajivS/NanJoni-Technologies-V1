@@ -34,10 +34,7 @@ body{
   max-width:1200px;
   margin:auto;
 }
-.section h2{
-  font-size:26px;
-  margin-bottom:24px;
-}
+.section h2{font-size:26px;margin-bottom:24px}
 
 /* CARD */
 .card{
@@ -63,10 +60,12 @@ body{
   height:100%;
   object-fit:contain;
   opacity:0;
-  transition:opacity .6s;
+  transition:opacity .6s ease;
   cursor:zoom-in;
 }
-.slider img.active{opacity:1}
+.slider img.active{
+  opacity:1;
+}
 
 /* DOTS */
 .dots{
@@ -76,8 +75,7 @@ body{
   margin:12px 0;
 }
 .dot{
-  width:10px;
-  height:10px;
+  width:10px;height:10px;
   border-radius:50%;
   background:#6b7280;
   cursor:pointer;
@@ -85,16 +83,8 @@ body{
 .dot.active{background:#22c55e}
 
 /* CARD TEXT */
-.card h3{
-  font-size:22px;
-  margin-top:10px;
-}
-.card p{
-  font-size:14px;
-  opacity:.85;
-  margin-top:6px;
-  line-height:1.6;
-}
+.card h3{font-size:22px;margin-top:10px}
+.card p{font-size:14px;opacity:.85;margin-top:6px}
 .tag{
   display:inline-block;
   margin-top:10px;
@@ -126,8 +116,6 @@ body{
   flex-direction:column;
   gap:14px;
 }
-
-/* IMAGE AREA */
 .image-area{
   position:relative;
   background:#000;
@@ -139,10 +127,7 @@ body{
   width:100%;
   height:100%;
   object-fit:contain;
-  touch-action:none;
 }
-
-/* ZOOM INDICATOR */
 .zoom-indicator{
   position:absolute;
   bottom:10px;
@@ -154,14 +139,10 @@ body{
   font-size:12px;
   font-weight:600;
 }
-
-/* MODAL DESCRIPTION */
 .modal-desc{
   font-size:14px;
   opacity:.9;
 }
-
-/* CLOSE */
 .close{
   position:absolute;
   top:16px;
@@ -178,11 +159,10 @@ body{
   font-weight:700;
 }
 
-/* DESKTOP VIEW */
+/* DESKTOP */
 @media(min-width:900px){
   .slider{height:300px}
   .header h1{font-size:52px}
-
   .modal-box{
     flex-direction:row;
     width:80vw;
@@ -224,7 +204,7 @@ body{
 </div>
 
 <script>
-/* SOFTWARE DATA */
+/* DATA */
 const software = [
 {
   name:"My Personal PDF Editor",
@@ -248,89 +228,79 @@ const software = [
 }
 ];
 
-const cards=document.getElementById("cards");
+const cards = document.getElementById("cards");
 
 /* BUILD CARDS */
 software.forEach(app=>{
-  const card=document.createElement("div");
-  card.className="card";
+  const card = document.createElement("div");
+  card.className = "card";
 
-  const slider=document.createElement("div");
-  slider.className="slider";
+  const slider = document.createElement("div");
+  slider.className = "slider";
 
   app.images.forEach((img,i)=>{
-    const im=document.createElement("img");
-    im.src=img.src;
-    im.loading="lazy";
-    im.decoding="async";
-    im.dataset.desc=img.desc;
-    if(i===0) im.classList.add("active");
+    const im = document.createElement("img");
+    im.src = img.src;
+    im.loading = "lazy";
+    im.decoding = "async";
+    im.dataset.desc = img.desc;
+    if(i === 0) im.classList.add("active");
     slider.appendChild(im);
   });
 
-  const dots=document.createElement("div");
-  dots.className="dots";
+  const dots = document.createElement("div");
+  dots.className = "dots";
 
-  card.append(slider,dots);
-  card.innerHTML+=`
+  card.appendChild(slider);
+  card.appendChild(dots);
+  card.innerHTML += `
     <h3>${app.name}</h3>
     <p>${app.desc}</p>
     <span class="tag">${app.tag}</span>
   `;
   cards.appendChild(card);
 
-  const imgs=slider.querySelectorAll("img");
-  let index=0;
+  const imgs = slider.querySelectorAll("img");
+  let index = 0;
 
   imgs.forEach((img,i)=>{
-    const d=document.createElement("div");
-    d.className="dot"+(i===0?" active":"");
+    const d = document.createElement("div");
+    d.className = "dot" + (i===0 ? " active" : "");
     dots.appendChild(d);
 
-    d.onclick=()=>changeSlide(i);
-    img.onclick=()=>openModal(img.src,img.dataset.desc);
+    d.onclick = ()=>changeSlide(i);
+    img.onclick = ()=>openModal(img.src, img.dataset.desc);
   });
 
   function changeSlide(i){
     imgs[index].classList.remove("active");
     dots.children[index].classList.remove("active");
-    index=i;
+    index = i;
     imgs[index].classList.add("active");
     dots.children[index].classList.add("active");
   }
 
-  setInterval(()=>changeSlide((index+1)%imgs.length),3000);
+  /* AUTO SLIDESHOW – FIXED */
+  setInterval(()=>{
+    changeSlide((index + 1) % imgs.length);
+  },3000);
 });
 
-/* MODAL + ZOOM */
-let scale=1;
-const modal=document.getElementById("modal");
-const modalImg=document.getElementById("modalImg");
-const modalDesc=document.getElementById("modalDesc");
-const zoomVal=document.getElementById("zoomVal");
+/* MODAL */
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const modalDesc = document.getElementById("modalDesc");
+const zoomVal = document.getElementById("zoomVal");
 
-function openModal(src,desc){
-  modal.style.display="flex";
-  modalDesc.textContent=desc;
-  modalImg.onload=resetZoom;
-  modalImg.src=src;
+function openModal(src, desc){
+  modal.style.display = "flex";
+  modalDesc.textContent = desc;
+  modalImg.onload = ()=>{ zoomVal.textContent = "1×"; };
+  modalImg.src = src;
 }
-document.getElementById("closeBtn").onclick=()=>modal.style.display="none";
-
-function resetZoom(){
-  scale=1;
-  updateZoom();
-}
-function updateZoom(){
-  modalImg.style.transform=`scale(${scale})`;
-  zoomVal.textContent=scale.toFixed(1)+"×";
-}
-modalImg.addEventListener("wheel",e=>{
-  e.preventDefault();
-  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
-  updateZoom();
-});
-modalImg.ondblclick=resetZoom;
+document.getElementById("closeBtn").onclick = ()=>{
+  modal.style.display = "none";
+};
 </script>
 
 </body>
