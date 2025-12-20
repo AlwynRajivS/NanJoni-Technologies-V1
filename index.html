@@ -10,7 +10,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
-/* BACKGROUND */
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
@@ -32,28 +31,34 @@ body{
 /* SECTION */
 .section{
   padding:20px 16px 60px;
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
 }
 .section h2{font-size:26px;margin-bottom:24px}
 
 /* CARD */
 .card{
-  background:rgba(255,255,255,.08);
-  border-radius:24px;
-  padding:16px;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.05));
+  border-radius:26px;
+  padding:18px;
   margin-bottom:36px;
-  backdrop-filter:blur(14px);
   box-shadow:0 25px 50px rgba(0,0,0,.45);
+}
+
+/* FRONT PAGE LAYOUT */
+.front{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
 }
 
 /* SLIDER */
 .slider{
   position:relative;
   height:240px;
-  border-radius:18px;
+  border-radius:20px;
   overflow:hidden;
-  background:#000;
+  background:linear-gradient(135deg,#020617,#020617,#0f172a);
 }
 .slider img{
   position:absolute;
@@ -62,7 +67,7 @@ body{
   height:100%;
   object-fit:contain;
   opacity:0;
-  transition:opacity .6s;
+  transition:opacity .6s ease;
   cursor:zoom-in;
 }
 .slider img.active{opacity:1}
@@ -72,23 +77,23 @@ body{
   display:flex;
   justify-content:center;
   gap:8px;
-  margin:12px 0;
+  margin:10px 0;
 }
 .dot{
   width:10px;height:10px;
   border-radius:50%;
-  background:#6b7280;
+  background:#64748b;
   cursor:pointer;
 }
 .dot.active{background:#22c55e}
 
 /* TEXT */
-.card h3{font-size:22px;margin-top:10px}
-.card p{font-size:14px;opacity:.85;margin-top:6px;line-height:1.6}
+.card h3{font-size:22px}
+.card p{font-size:14px;opacity:.9;line-height:1.6}
 .tag{
   display:inline-block;
   margin-top:10px;
-  padding:6px 16px;
+  padding:6px 18px;
   background:#22c55e;
   color:#000;
   border-radius:20px;
@@ -106,63 +111,49 @@ body{
   justify-content:center;
   z-index:9999;
 }
-
 .modal-box{
   background:#020617;
-  border-radius:18px;
-  max-width:92vw;
-  max-height:92vh;
-  padding:12px;
-  position:relative;
+  border-radius:20px;
+  padding:16px;
+  max-width:95vw;
+  max-height:95vh;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
-
-/* PAN AREA (IMPORTANT FIX) */
 .pan-area{
   position:relative;
-  width:80vw;
-  max-width:900px;
-  height:60vh;
+  background:#000;
+  border-radius:14px;
+  height:55vh;
   overflow:hidden;
-  touch-action:none;
 }
-
 .pan-area img{
   width:100%;
   height:100%;
   object-fit:contain;
   transform-origin:center;
-  transition:transform .12s;
+  touch-action:none;
 }
-
-/* ZOOM INDICATOR */
 .zoom-indicator{
   position:absolute;
   bottom:10px;
   right:10px;
-  background:rgba(34,197,94,.9);
+  background:#22c55e;
   color:#000;
-  padding:4px 10px;
+  padding:4px 12px;
   border-radius:16px;
   font-size:12px;
   font-weight:600;
 }
-
-/* MODAL TEXT */
-.modal-box p{
-  margin-top:10px;
-  font-size:14px;
-  opacity:.85;
-}
-
-/* CLOSE */
 .close{
   position:absolute;
-  top:-14px;
-  right:-14px;
+  top:18px;
+  right:18px;
   background:#22c55e;
   color:#000;
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   border-radius:50%;
   display:flex;
   align-items:center;
@@ -173,8 +164,22 @@ body{
 
 /* DESKTOP */
 @media(min-width:900px){
-  .slider{height:300px}
   .header h1{font-size:52px}
+  .slider{height:280px}
+
+  .front{
+    flex-direction:row;
+    align-items:center;
+  }
+  .slider{flex:0 0 55%}
+  .front .content{flex:0 0 45%}
+
+  .modal-box{
+    flex-direction:row;
+    width:80vw;
+    height:70vh;
+  }
+  .pan-area{flex:0 0 60%;height:auto}
 }
 </style>
 </head>
@@ -193,14 +198,12 @@ body{
 
 <!-- MODAL -->
 <div class="modal" id="modal">
+  <div class="close" onclick="closeModal()">✕</div>
   <div class="modal-box">
-    <div class="close" onclick="closeModal()">✕</div>
-
-    <div class="pan-area" id="panArea">
+    <div class="pan-area">
       <img id="modalImg">
       <div class="zoom-indicator" id="zoomVal">1×</div>
     </div>
-
     <p id="modalDesc"></p>
   </div>
 </div>
@@ -232,52 +235,54 @@ const software=[
 
 const cards=document.getElementById("cards");
 
-/* BUILD CARDS */
-software.forEach(s=>{
+/* BUILD */
+software.forEach(app=>{
   const card=document.createElement("div");
   card.className="card";
 
+  const imgs=app.images.map((i,j)=>`
+    <img src="${i.src}" ${j===0?'class="active"':''} data-desc="${i.desc}">
+  `).join("");
+
   card.innerHTML=`
-    <div class="slider">
-      ${s.images.map((i,j)=>`
-        <img src="${i.src}" ${j===0?'class="active"':''}
-        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">
-      `).join("")}
+    <div class="front">
+      <div class="slider">${imgs}</div>
+      <div class="content">
+        <h3>${app.name}</h3>
+        <p>${app.desc}</p>
+        <span class="tag">${app.tag}</span>
+      </div>
     </div>
     <div class="dots"></div>
-    <h3>${s.name}</h3>
-    <p>${s.desc}</p>
-    <span class="tag">${s.tag}</span>
   `;
-
   cards.appendChild(card);
 
-  const imgs=card.querySelectorAll(".slider img");
+  const images=card.querySelectorAll(".slider img");
   const dots=card.querySelector(".dots");
   let idx=0;
 
-  imgs.forEach((_,i)=>{
+  images.forEach((img,i)=>{
     const d=document.createElement("div");
     d.className="dot"+(i===0?" active":"");
-    d.onclick=()=>change(i);
     dots.appendChild(d);
+
+    d.onclick=()=>change(i);
+    img.onclick=()=>openModal(img.src,img.dataset.desc);
   });
 
   function change(i){
-    imgs[idx].classList.remove("active");
+    images[idx].classList.remove("active");
     dots.children[idx].classList.remove("active");
     idx=i;
-    imgs[idx].classList.add("active");
+    images[idx].classList.add("active");
     dots.children[idx].classList.add("active");
   }
 
-  setInterval(()=>change((idx+1)%imgs.length),3000);
+  setInterval(()=>change((idx+1)%images.length),3000);
 });
 
-/* ZOOM + PAN */
-let scale=1,lastScale=1,startDist=0;
-let posX=0,posY=0,startX=0,startY=0,isDragging=false;
-
+/* ZOOM FIX */
+let scale=1;
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
 const modalDesc=document.getElementById("modalDesc");
@@ -285,60 +290,21 @@ const zoomVal=document.getElementById("zoomVal");
 
 function openModal(src,desc){
   modal.style.display="flex";
-  modalImg.src=src;
   modalDesc.innerText=desc;
-  resetZoom();
+  modalImg.onload=()=>{scale=1;updateZoom()};
+  modalImg.src=src;
 }
-
-function closeModal(){
-  modal.style.display="none";
-}
-
-function resetZoom(){
-  scale=1;posX=0;posY=0;
-  updateTransform();
-}
-
-function updateTransform(){
-  modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
+function closeModal(){modal.style.display="none"}
+function updateZoom(){
+  modalImg.style.transform=`scale(${scale})`;
   zoomVal.innerText=scale.toFixed(1)+"×";
 }
-
-/* TOUCH */
-modalImg.addEventListener("touchstart",e=>{
-  if(e.touches.length===2){
-    startDist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    lastScale=scale;
-  }
-  if(e.touches.length===1 && scale>1){
-    isDragging=true;
-    startX=e.touches[0].clientX-posX;
-    startY=e.touches[0].clientY-posY;
-  }
+modalImg.addEventListener("wheel",e=>{
+  e.preventDefault();
+  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
+  updateZoom();
 });
-
-modalImg.addEventListener("touchmove",e=>{
-  if(e.touches.length===2){
-    let dist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
-  }
-  if(isDragging && e.touches.length===1){
-    posX=e.touches[0].clientX-startX;
-    posY=e.touches[0].clientY-startY;
-  }
-  updateTransform();
-});
-
-modalImg.addEventListener("touchend",()=>isDragging=false);
-
-/* DOUBLE TAP RESET */
-modalImg.ondblclick=resetZoom;
+modalImg.ondblclick=()=>{scale=1;updateZoom()};
 </script>
 
 </body>
