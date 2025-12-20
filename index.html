@@ -5,8 +5,6 @@
 <title>NanJoni Technologies</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="NanJoni Technologies builds premium mobile-first enterprise web applications.">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -40,7 +38,7 @@ body{
   -webkit-background-clip:text;
   color:transparent;
 }
-.hero p{opacity:.9;margin-top:10px;font-size:18px}
+.hero p{margin-top:10px;font-size:18px;opacity:.9}
 
 /* ===== SECTION ===== */
 .section{
@@ -64,10 +62,11 @@ body{
   box-shadow:0 50px 120px rgba(0,0,0,.7);
 }
 
-.front{
-  display:flex;
-  flex-direction:column;
-  gap:36px;
+/* ===== TITLE ===== */
+.card h3{
+  font-size:30px;
+  margin-bottom:22px;
+  text-align:center;
 }
 
 /* ===== PHONE STACK ===== */
@@ -75,7 +74,7 @@ body{
   position:relative;
   width:260px;
   max-width:90%;
-  margin:auto;
+  margin:0 auto;
   aspect-ratio:9/19;
   cursor:pointer;
 }
@@ -98,12 +97,6 @@ body{
   transform:scale(1) translateY(0);
   z-index:3;
 }
-.phone.behind{
-  opacity:.35;
-  transform:translate(20px,20px) scale(.92);
-  z-index:1;
-}
-
 .phone img{
   width:100%;
   height:100%;
@@ -120,10 +113,33 @@ body{
   z-index:-1;
 }
 
-/* ===== CONTENT ===== */
-.content{text-align:center}
-.content h3{font-size:28px;margin-bottom:8px}
-.content p{opacity:.85;line-height:1.7;font-size:15px}
+/* ===== DOTS (BELOW IMAGE) ===== */
+.dots{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:18px 0 24px;
+}
+.dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#64748b;
+  cursor:pointer;
+}
+.dot.active{
+  background:var(--accent);
+}
+
+/* ===== DESCRIPTION ===== */
+.content{
+  text-align:center;
+}
+.content p{
+  font-size:15px;
+  line-height:1.7;
+  opacity:.85;
+}
 .tag{
   display:inline-block;
   margin-top:14px;
@@ -133,13 +149,6 @@ body{
   border-radius:20px;
   font-size:12px;
   font-weight:600;
-}
-
-/* ===== DESKTOP ===== */
-@media(min-width:900px){
-  .front{flex-direction:row;align-items:center;gap:60px}
-  .media{flex:0 0 45%}
-  .content{flex:0 0 55%;text-align:left}
 }
 
 /* ===== FULLSCREEN VIEW ===== */
@@ -154,9 +163,24 @@ body{
 }
 .viewer.active{display:flex}
 .viewer img{
-  max-height:92%;
   max-width:92%;
-  border-radius:26px;
+  max-height:92%;
+  border-radius:28px;
+}
+
+/* ===== DESKTOP ===== */
+@media(min-width:900px){
+  .card{
+    padding:40px 60px;
+  }
+  .card h3{
+    text-align:left;
+  }
+  .content{
+    text-align:left;
+    max-width:520px;
+    margin:auto;
+  }
 }
 </style>
 </head>
@@ -177,75 +201,88 @@ body{
 
   <!-- CARD 1 -->
   <div class="card">
-    <div class="front">
-      <div class="media">
-        <div class="phone-stack">
-          <div class="phone active"><img src="images/PDFMERGE1.jpg"></div>
-          <div class="phone behind"><img src="images/PDFMERGE2.jpg"></div>
-          <div class="phone"><img src="images/PDFMERGE3.jpg"></div>
-        </div>
-      </div>
-      <div class="content">
-        <h3>My Personal PDF Editor</h3>
-        <p>
-          A mobile-optimized PDF editor designed for seamless merge,
-          split, preview, and document conversion workflows.
-        </p>
-        <span class="tag">PDF Tool</span>
-      </div>
+    <h3>My Personal PDF Editor</h3>
+
+    <div class="phone-stack">
+      <div class="phone active"><img src="images/PDFMERGE1.jpg"></div>
+      <div class="phone"><img src="images/PDFMERGE2.jpg"></div>
+      <div class="phone"><img src="images/PDFMERGE3.jpg"></div>
+    </div>
+
+    <div class="dots"></div>
+
+    <div class="content">
+      <p>
+        A mobile-optimized PDF editor designed for seamless merge,
+        split, preview, and document conversion workflows.
+      </p>
+      <span class="tag">PDF Tool</span>
     </div>
   </div>
 
   <!-- CARD 2 -->
   <div class="card">
-    <div class="front">
-      <div class="media">
-        <div class="phone-stack">
-          <div class="phone active"><img src="images/tool1.jpg"></div>
-          <div class="phone behind"><img src="images/tool2.jpg"></div>
-          <div class="phone"><img src="images/tool3.jpg"></div>
-        </div>
-      </div>
-      <div class="content">
-        <h3>Student Performance Tracker</h3>
-        <p>
-          A mobile-first analytics platform that tracks daily learning,
-          rankings, and performance insights.
-        </p>
-        <span class="tag">EdTech Platform</span>
-      </div>
+    <h3>Student Performance Tracker</h3>
+
+    <div class="phone-stack">
+      <div class="phone active"><img src="images/tool1.jpg"></div>
+      <div class="phone"><img src="images/tool2.jpg"></div>
+      <div class="phone"><img src="images/tool3.jpg"></div>
+    </div>
+
+    <div class="dots"></div>
+
+    <div class="content">
+      <p>
+        A mobile-first analytics platform that tracks daily learning,
+        rankings, and performance insights.
+      </p>
+      <span class="tag">EdTech Platform</span>
     </div>
   </div>
 
 </section>
 
-<!-- FULLSCREEN VIEW -->
+<!-- FULLSCREEN -->
 <div class="viewer" id="viewer">
   <img id="viewerImg">
 </div>
 
 <script>
-/* ===== PHONE STACK SLIDER ===== */
-document.querySelectorAll(".phone-stack").forEach(stack=>{
-  const phones=stack.querySelectorAll(".phone");
+/* ===== SLIDER + DOTS ===== */
+document.querySelectorAll(".card").forEach(card=>{
+  const phones=card.querySelectorAll(".phone");
+  const dotsBox=card.querySelector(".dots");
   let i=0;
 
-  setInterval(()=>{
-    phones.forEach(p=>p.classList.remove("active","behind"));
+  phones.forEach((_,idx)=>{
+    const d=document.createElement("div");
+    d.className="dot"+(idx===0?" active":"");
+    d.onclick=()=>go(idx);
+    dotsBox.appendChild(d);
+  });
+
+  const dots=dotsBox.querySelectorAll(".dot");
+
+  function go(n){
+    phones[i].classList.remove("active");
+    dots[i].classList.remove("active");
+    i=n;
     phones[i].classList.add("active");
-    phones[(i+1)%phones.length].classList.add("behind");
-    i=(i+1)%phones.length;
-  },3500);
+    dots[i].classList.add("active");
+  }
+
+  setInterval(()=>go((i+1)%phones.length),3500);
 
   /* FULLSCREEN */
-  stack.addEventListener("click",()=>{
-    const active=stack.querySelector(".phone.active img");
-    document.getElementById("viewerImg").src=active.src;
+  card.querySelector(".phone-stack").onclick=()=>{
+    document.getElementById("viewerImg").src=
+      phones[i].querySelector("img").src;
     document.getElementById("viewer").classList.add("active");
-  });
+  };
 });
 
-/* CLOSE VIEW */
+/* CLOSE FULLSCREEN */
 document.getElementById("viewer").onclick=()=>{
   document.getElementById("viewer").classList.remove("active");
 };
