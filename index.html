@@ -44,7 +44,6 @@ body{
   padding:16px;
   margin-bottom:36px;
   backdrop-filter:blur(14px);
-  box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
 /* SLIDER */
@@ -96,7 +95,7 @@ body{
   font-weight:600;
 }
 
-/* MODAL */
+/* ================= MODAL ================= */
 .modal{
   position:fixed;
   inset:0;
@@ -107,31 +106,34 @@ body{
   z-index:9999;
 }
 
+/* MODAL BOX */
 .modal-box{
   background:#020617;
   border-radius:18px;
-  max-width:92vw;
-  max-height:92vh;
-  padding:12px;
-  position:relative;
+  max-width:95vw;
+  max-height:95vh;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-/* PAN AREA (IMPORTANT FIX) */
-.pan-area{
+/* IMAGE AREA */
+.image-area{
   position:relative;
-  width:80vw;
-  max-width:900px;
-  height:60vh;
+  flex:1;
+  background:#000;
+  border-radius:12px;
   overflow:hidden;
-  touch-action:none;
 }
 
-.pan-area img{
+.image-area img{
   width:100%;
   height:100%;
   object-fit:contain;
   transform-origin:center;
-  transition:transform .12s;
+  touch-action:none;
+  user-select:none;
 }
 
 /* ZOOM INDICATOR */
@@ -139,26 +141,25 @@ body{
   position:absolute;
   bottom:10px;
   right:10px;
-  background:rgba(34,197,94,.9);
+  background:#22c55e;
   color:#000;
   padding:4px 10px;
-  border-radius:16px;
+  border-radius:14px;
   font-size:12px;
   font-weight:600;
 }
 
-/* MODAL TEXT */
-.modal-box p{
-  margin-top:10px;
+/* DESCRIPTION */
+.desc{
   font-size:14px;
-  opacity:.85;
+  opacity:.9;
 }
 
 /* CLOSE */
 .close{
   position:absolute;
-  top:-14px;
-  right:-14px;
+  top:16px;
+  right:16px;
   background:#22c55e;
   color:#000;
   width:40px;
@@ -171,10 +172,18 @@ body{
   font-weight:700;
 }
 
-/* DESKTOP */
+/* DESKTOP LAYOUT */
 @media(min-width:900px){
   .slider{height:300px}
   .header h1{font-size:52px}
+
+  .modal-box{
+    flex-direction:row;
+    width:80vw;
+    height:70vh;
+  }
+  .image-area{flex:0 0 60%}
+  .desc{flex:0 0 40%;padding-left:16px}
 }
 </style>
 </head>
@@ -193,22 +202,19 @@ body{
 
 <!-- MODAL -->
 <div class="modal" id="modal">
+  <div class="close" onclick="closeModal()">✕</div>
   <div class="modal-box">
-    <div class="close" onclick="closeModal()">✕</div>
-
-    <div class="pan-area" id="panArea">
+    <div class="image-area">
       <img id="modalImg">
       <div class="zoom-indicator" id="zoomVal">1×</div>
     </div>
-
-    <p id="modalDesc"></p>
+    <div class="desc" id="modalDesc"></div>
   </div>
 </div>
 
 <script>
 /* DATA */
-const software=[
-{
+const software=[{
   name:"My Personal PDF Editor",
   desc:"Modern PDF editor with merge, split & Excel conversion.",
   tag:"PDF Tool",
@@ -217,31 +223,19 @@ const software=[
     {src:"images/PDFMERGE2.jpg",desc:"PDF to Excel conversion preview"},
     {src:"images/PDFMERGE3.jpg",desc:"Mobile-friendly editor UI"}
   ]
-},
-{
-  name:"Student Performance Tracker",
-  desc:"Track daily coding progress, analytics and rankings.",
-  tag:"EdTech",
-  images:[
-    {src:"images/tool1.jpg",desc:"Student dashboard"},
-    {src:"images/tool2.jpg",desc:"Leaderboard analytics"},
-    {src:"images/tool3.jpg",desc:"Admin monitoring panel"}
-  ]
-}
-];
+}];
 
 const cards=document.getElementById("cards");
 
-/* BUILD CARDS */
+/* BUILD CARD */
 software.forEach(s=>{
   const card=document.createElement("div");
   card.className="card";
-
   card.innerHTML=`
     <div class="slider">
       ${s.images.map((i,j)=>`
         <img src="${i.src}" ${j===0?'class="active"':''}
-        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">
+        onclick="openModal('${i.src}','${i.desc}')">
       `).join("")}
     </div>
     <div class="dots"></div>
@@ -249,7 +243,6 @@ software.forEach(s=>{
     <p>${s.desc}</p>
     <span class="tag">${s.tag}</span>
   `;
-
   cards.appendChild(card);
 
   const imgs=card.querySelectorAll(".slider img");
@@ -274,70 +267,59 @@ software.forEach(s=>{
   setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* ZOOM + PAN */
-let scale=1,lastScale=1,startDist=0;
-let posX=0,posY=0,startX=0,startY=0,isDragging=false;
+/* ===== ZOOM + PAN (FIXED) ===== */
+let scale=1,posX=0,posY=0,startX=0,startY=0,isDrag=false;
 
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
-const modalDesc=document.getElementById("modalDesc");
 const zoomVal=document.getElementById("zoomVal");
 
 function openModal(src,desc){
   modal.style.display="flex";
+  modalImg.onload=resetZoom;   // IMPORTANT FIX
   modalImg.src=src;
   modalDesc.innerText=desc;
-  resetZoom();
 }
 
-function closeModal(){
-  modal.style.display="none";
-}
+function closeModal(){modal.style.display="none"}
 
 function resetZoom(){
   scale=1;posX=0;posY=0;
-  updateTransform();
+  update();
 }
 
-function updateTransform(){
+function update(){
   modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
   zoomVal.innerText=scale.toFixed(1)+"×";
 }
 
-/* TOUCH */
 modalImg.addEventListener("touchstart",e=>{
-  if(e.touches.length===2){
-    startDist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    lastScale=scale;
-  }
-  if(e.touches.length===1 && scale>1){
-    isDragging=true;
+  if(e.touches.length===1){
+    isDrag=true;
     startX=e.touches[0].clientX-posX;
     startY=e.touches[0].clientY-posY;
+  }
+  if(e.touches.length===2){
+    isDrag=false;
   }
 });
 
 modalImg.addEventListener("touchmove",e=>{
-  if(e.touches.length===2){
-    let dist=Math.hypot(
-      e.touches[0].clientX-e.touches[1].clientX,
-      e.touches[0].clientY-e.touches[1].clientY
-    );
-    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
-  }
-  if(isDragging && e.touches.length===1){
+  if(isDrag){
     posX=e.touches[0].clientX-startX;
     posY=e.touches[0].clientY-startY;
+    update();
   }
-  updateTransform();
 });
 
-modalImg.addEventListener("touchend",()=>isDragging=false);
+modalImg.addEventListener("touchend",()=>isDrag=false);
 
-/* DOUBLE TAP RESET */
+modalImg.addEventListener("wheel",e=>{
+  e.preventDefault();
+  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
+  update();
+});
+
 modalImg.ondblclick=resetZoom;
 </script>
 
