@@ -8,7 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
 
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
@@ -17,35 +22,38 @@ body{
 
 /* HEADER */
 .header{
-  padding:70px 16px 50px;
+  padding:70px 16px 40px;
   text-align:center;
 }
 .header h1{
-  font-size:40px;
+  font-size:42px;
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
-.header p{opacity:.9;margin-top:8px}
+.header p{opacity:.85;margin-top:8px}
 
 /* SECTION */
 .section{
-  padding:20px 16px 60px;
   max-width:1200px;
   margin:auto;
+  padding:20px 16px 60px;
 }
-.section h2{font-size:26px;margin-bottom:24px}
+.section h2{
+  font-size:26px;
+  margin-bottom:24px;
+}
 
 /* CARD */
 .card{
-  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.05));
-  border-radius:26px;
+  background:rgba(255,255,255,0.08);
+  border-radius:24px;
   padding:18px;
   margin-bottom:36px;
   box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
-/* FRONT PAGE LAYOUT */
+/* LAYOUT */
 .front{
   display:flex;
   flex-direction:column;
@@ -55,131 +63,82 @@ body{
 /* SLIDER */
 .slider{
   position:relative;
-  height:240px;
-  border-radius:20px;
+  height:260px;
+  border-radius:18px;
   overflow:hidden;
-  background:linear-gradient(135deg,#020617,#020617,#0f172a);
+  background:#000;
 }
-.slider img{
+
+.slide{
   position:absolute;
   inset:0;
-  width:100%;
-  height:100%;
-  object-fit:contain;
   opacity:0;
   transition:opacity .6s ease;
-  cursor:zoom-in;
 }
-.slider img.active{opacity:1}
+
+.slide.active{
+  opacity:1;
+}
+
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit:contain; /* FULL IMAGE */
+}
 
 /* DOTS */
 .dots{
   display:flex;
   justify-content:center;
   gap:8px;
-  margin:10px 0;
+  margin-top:12px;
 }
 .dot{
-  width:10px;height:10px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:#64748b;
   cursor:pointer;
 }
-.dot.active{background:#22c55e}
+.dot.active{
+  background:#22c55e;
+}
 
-/* TEXT */
-.card h3{font-size:22px}
-.card p{font-size:14px;opacity:.9;line-height:1.6}
+/* CONTENT */
+.content h3{
+  font-size:22px;
+}
+.content p{
+  font-size:14px;
+  opacity:.85;
+  line-height:1.6;
+  margin-top:6px;
+}
 .tag{
   display:inline-block;
   margin-top:10px;
-  padding:6px 18px;
+  padding:6px 16px;
   background:#22c55e;
   color:#000;
   border-radius:20px;
   font-size:12px;
   font-weight:600;
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
-.modal-box{
-  background:#020617;
-  border-radius:20px;
-  padding:16px;
-  max-width:95vw;
-  max-height:95vh;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-.pan-area{
-  position:relative;
-  background:#000;
-  border-radius:14px;
-  height:55vh;
-  overflow:hidden;
-}
-.pan-area img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  transform-origin:center;
-  touch-action:none;
-}
-.zoom-indicator{
-  position:absolute;
-  bottom:10px;
-  right:10px;
-  background:#22c55e;
-  color:#000;
-  padding:4px 12px;
-  border-radius:16px;
-  font-size:12px;
-  font-weight:600;
-}
-.close{
-  position:absolute;
-  top:18px;
-  right:18px;
-  background:#22c55e;
-  color:#000;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-weight:700;
 }
 
 /* DESKTOP */
 @media(min-width:900px){
-  .header h1{font-size:52px}
-  .slider{height:280px}
-
   .front{
     flex-direction:row;
     align-items:center;
   }
-  .slider{flex:0 0 55%}
-  .front .content{flex:0 0 45%}
-
-  .modal-box{
-    flex-direction:row;
-    width:80vw;
-    height:70vh;
+  .slider{
+    flex:0 0 55%;
+    height:300px;
   }
-  .pan-area{flex:0 0 60%;height:auto}
+  .content{
+    flex:0 0 45%;
+    padding-left:20px;
+  }
 }
 </style>
 </head>
@@ -193,118 +152,80 @@ body{
 
 <div class="section">
   <h2>Software Showcase</h2>
-  <div id="cards"></div>
-</div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="close" onclick="closeModal()">✕</div>
-  <div class="modal-box">
-    <div class="pan-area">
-      <img id="modalImg">
-      <div class="zoom-indicator" id="zoomVal">1×</div>
-    </div>
-    <p id="modalDesc"></p>
-  </div>
-</div>
-
-<script>
-/* DATA */
-const software=[
-{
-  name:"My Personal PDF Editor",
-  desc:"Modern PDF editor with merge, split & Excel conversion.",
-  tag:"PDF Tool",
-  images:[
-    {src:"images/PDFMERGE1.jpg",desc:"PDF merge and split interface"},
-    {src:"images/PDFMERGE2.jpg",desc:"PDF to Excel conversion preview"},
-    {src:"images/PDFMERGE3.jpg",desc:"Mobile-friendly editor UI"}
-  ]
-},
-{
-  name:"Student Performance Tracker",
-  desc:"Track daily coding progress, analytics and rankings.",
-  tag:"EdTech",
-  images:[
-    {src:"images/tool1.jpg",desc:"Student dashboard"},
-    {src:"images/tool2.jpg",desc:"Leaderboard analytics"},
-    {src:"images/tool3.jpg",desc:"Admin monitoring panel"}
-  ]
-}
-];
-
-const cards=document.getElementById("cards");
-
-/* BUILD */
-software.forEach(app=>{
-  const card=document.createElement("div");
-  card.className="card";
-
-  const imgs=app.images.map((i,j)=>`
-    <img src="${i.src}" ${j===0?'class="active"':''} data-desc="${i.desc}">
-  `).join("");
-
-  card.innerHTML=`
+  <!-- CARD 1 -->
+  <div class="card">
     <div class="front">
-      <div class="slider">${imgs}</div>
+      <div class="slider">
+        <div class="slide active"><img src="images/PDFMERGE1.jpg"></div>
+        <div class="slide"><img src="images/PDFMERGE2.jpg"></div>
+        <div class="slide"><img src="images/PDFMERGE3.jpg"></div>
+      </div>
+
       <div class="content">
-        <h3>${app.name}</h3>
-        <p>${app.desc}</p>
-        <span class="tag">${app.tag}</span>
+        <h3>My Personal PDF Editor</h3>
+        <p>
+          A modern, mobile-friendly PDF editor supporting merge, split,
+          preview, and PDF-to-Excel conversion with a clean UI.
+        </p>
+        <span class="tag">PDF Tool</span>
       </div>
     </div>
     <div class="dots"></div>
-  `;
-  cards.appendChild(card);
+  </div>
 
-  const images=card.querySelectorAll(".slider img");
-  const dots=card.querySelector(".dots");
-  let idx=0;
+  <!-- CARD 2 -->
+  <div class="card">
+    <div class="front">
+      <div class="slider">
+        <div class="slide active"><img src="images/tool1.jpg"></div>
+        <div class="slide"><img src="images/tool2.jpg"></div>
+        <div class="slide"><img src="images/tool3.jpg"></div>
+      </div>
 
-  images.forEach((img,i)=>{
-    const d=document.createElement("div");
-    d.className="dot"+(i===0?" active":"");
-    dots.appendChild(d);
+      <div class="content">
+        <h3>Student Performance Tracker</h3>
+        <p>
+          An analytics platform to track daily coding progress,
+          rankings, and student performance insights.
+        </p>
+        <span class="tag">EdTech Platform</span>
+      </div>
+    </div>
+    <div class="dots"></div>
+  </div>
 
-    d.onclick=()=>change(i);
-    img.onclick=()=>openModal(img.src,img.dataset.desc);
+</div>
+
+<script>
+document.querySelectorAll(".card").forEach(card=>{
+  const slides = card.querySelectorAll(".slide");
+  const dotsContainer = card.querySelector(".dots");
+  let index = 0;
+
+  // create dots
+  slides.forEach((_,i)=>{
+    const d = document.createElement("div");
+    d.className = "dot" + (i===0?" active":"");
+    d.onclick = () => changeSlide(i);
+    dotsContainer.appendChild(d);
   });
 
-  function change(i){
-    images[idx].classList.remove("active");
-    dots.children[idx].classList.remove("active");
-    idx=i;
-    images[idx].classList.add("active");
-    dots.children[idx].classList.add("active");
+  const dots = dotsContainer.querySelectorAll(".dot");
+
+  function changeSlide(i){
+    slides[index].classList.remove("active");
+    dots[index].classList.remove("active");
+    index = i;
+    slides[index].classList.add("active");
+    dots[index].classList.add("active");
   }
 
-  setInterval(()=>change((idx+1)%images.length),3000);
+  // auto slide
+  setInterval(()=>{
+    changeSlide((index + 1) % slides.length);
+  },3000);
 });
-
-/* ZOOM FIX */
-let scale=1;
-const modal=document.getElementById("modal");
-const modalImg=document.getElementById("modalImg");
-const modalDesc=document.getElementById("modalDesc");
-const zoomVal=document.getElementById("zoomVal");
-
-function openModal(src,desc){
-  modal.style.display="flex";
-  modalDesc.innerText=desc;
-  modalImg.onload=()=>{scale=1;updateZoom()};
-  modalImg.src=src;
-}
-function closeModal(){modal.style.display="none"}
-function updateZoom(){
-  modalImg.style.transform=`scale(${scale})`;
-  zoomVal.innerText=scale.toFixed(1)+"×";
-}
-modalImg.addEventListener("wheel",e=>{
-  e.preventDefault();
-  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
-  updateZoom();
-});
-modalImg.ondblclick=()=>{scale=1;updateZoom()};
 </script>
 
 </body>
