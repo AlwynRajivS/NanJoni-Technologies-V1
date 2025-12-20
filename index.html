@@ -8,45 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-/* BACKGROUND */
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
 }
 
 /* HERO */
-.hero{
-  padding:70px 16px 50px;
-  text-align:center;
-}
+.hero{padding:70px 16px 50px;text-align:center}
 .hero h1{
   font-size:40px;
-  font-weight:700;
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
-.hero p{
-  margin-top:10px;
-  opacity:.9;
-  font-size:16px;
-}
+.hero p{opacity:.9}
 
 /* SECTION */
-.section{
-  padding:30px 16px 60px;
-}
-.section h2{
-  font-size:26px;
-  margin-bottom:25px;
-}
+.section{padding:30px 16px 60px}
+.section h2{font-size:26px;margin-bottom:25px}
 
 /* CARD */
 .card{
@@ -58,41 +39,26 @@ body{
   box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
-/* IMAGE CAROUSEL */
+/* CAROUSEL */
 .carousel{
   display:flex;
   gap:14px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
-  padding-bottom:6px;
 }
 .carousel::-webkit-scrollbar{display:none}
-
 .carousel img{
-  flex:0 0 75%;
-  height:200px;
+  flex:0 0 80%;
+  height:220px;
   object-fit:cover;
   border-radius:18px;
   scroll-snap-align:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.45);
   cursor:pointer;
-  transition:.3s;
-}
-.carousel img:hover{
-  transform:scale(1.05);
 }
 
 /* CONTENT */
-.card h3{
-  margin-top:18px;
-  font-size:22px;
-}
-.card p{
-  margin-top:8px;
-  font-size:14px;
-  opacity:.85;
-  line-height:1.6;
-}
+.card h3{margin-top:18px;font-size:22px}
+.card p{margin-top:8px;font-size:14px;opacity:.85}
 .tag{
   display:inline-block;
   margin-top:12px;
@@ -108,85 +74,81 @@ body{
 .viewer{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.92);
+  background:#000;
   display:none;
   align-items:center;
   justify-content:center;
   z-index:9999;
+  overflow:hidden;
 }
+
 .viewer img{
-  max-width:95%;
-  max-height:90%;
-  border-radius:12px;
-  box-shadow:0 20px 60px rgba(0,0,0,.8);
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  transition:transform .25s ease;
 }
-.close{
+
+/* CONTROLS */
+.ctrl{
   position:absolute;
-  top:20px;
-  right:20px;
-  font-size:28px;
-  background:#22c55e;
-  color:#000;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(6px);
   border-radius:50%;
-  width:40px;
-  height:40px;
+  width:44px;height:44px;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:22px;
   cursor:pointer;
-  font-weight:700;
+  user-select:none;
+}
+.close{top:20px;right:20px}
+.prev{left:14px}
+.next{right:14px}
+
+/* COUNTER */
+.counter{
+  position:absolute;
+  bottom:20px;
+  background:rgba(255,255,255,.18);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
 }
 
 /* DESKTOP */
 @media(min-width:900px){
-  .section{
-    max-width:1200px;
-    margin:auto;
-  }
+  .section{max-width:1200px;margin:auto}
   .hero h1{font-size:52px}
-  .carousel img{
-    flex:0 0 32%;
-    height:230px;
-  }
+  .carousel img{flex:0 0 32%;height:240px}
 }
 
 /* FOOTER */
-footer{
-  text-align:center;
-  padding:20px;
-  opacity:.6;
-  font-size:13px;
-}
+footer{text-align:center;padding:20px;opacity:.6;font-size:13px}
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <h1>NanJoni Technologies</h1>
   <p>Premium Web Applications • Innovation Driven</p>
 </div>
 
-<!-- SHOWCASE -->
 <div class="section">
   <h2>Software Showcase</h2>
 
-  <!-- SOFTWARE 1 -->
   <div class="card">
     <div class="carousel">
       <img src="images/PDFMERGE1.jpg">
       <img src="images/PDFMERGE2.jpg">
     </div>
     <h3>My Personal PDF Editor</h3>
-    <p>
-      A modern, mobile-friendly PDF editor supporting merge, split,
-      zoom, preview and PDF-to-Excel conversion with elegant UI.
-    </p>
+    <p>Modern PDF editor with merge, split & Excel conversion.</p>
     <span class="tag">PDF Tool</span>
   </div>
 
-  <!-- SOFTWARE 2 -->
   <div class="card">
     <div class="carousel">
       <img src="images/tool1.jpg">
@@ -194,34 +156,93 @@ footer{
       <img src="images/tool3.jpg">
     </div>
     <h3>Student Performance Tracker</h3>
-    <p>
-      A smart analytics platform for tracking daily coding progress,
-      rankings, insights and admin dashboards.
-    </p>
+    <p>Smart analytics platform for coding performance.</p>
     <span class="tag">EdTech Platform</span>
   </div>
 </div>
 
-<footer>
-  © 2025 NanJoni Technologies • Premium Startup UI
-</footer>
+<footer>© 2025 NanJoni Technologies • Premium Startup UI</footer>
 
-<!-- FULLSCREEN VIEWER -->
+<!-- VIEWER -->
 <div class="viewer" id="viewer">
-  <div class="close" onclick="closeViewer()">✕</div>
+  <div class="ctrl close" onclick="closeViewer()">✕</div>
+  <div class="ctrl prev" onclick="prevImg()">❮</div>
   <img id="viewerImg">
+  <div class="ctrl next" onclick="nextImg()">❯</div>
+  <div class="counter" id="counter"></div>
 </div>
 
 <script>
-document.querySelectorAll(".carousel img").forEach(img=>{
-  img.onclick = () => {
-    document.getElementById("viewerImg").src = img.src;
-    document.getElementById("viewer").style.display = "flex";
+let images=[],current=0,slideTimer;
+let scale=1,startDist=0,lastScale=1;
+let img=document.getElementById("viewerImg");
+
+document.querySelectorAll(".carousel").forEach(car=>{
+  let imgs=car.querySelectorAll("img");
+  imgs.forEach((i,idx)=>{
+    i.onclick=()=>{
+      images=[...imgs].map(x=>x.src);
+      current=idx;
+      openViewer();
+    };
+  });
+});
+
+function openViewer(){
+  resetZoom();
+  showImg();
+  viewer.style.display="flex";
+  startSlideshow();
+}
+
+function closeViewer(){
+  viewer.style.display="none";
+  clearInterval(slideTimer);
+}
+
+function showImg(){
+  img.src=images[current];
+  counter.innerText=`${current+1} / ${images.length}`;
+}
+
+function nextImg(){current=(current+1)%images.length;manual()}
+function prevImg(){current=(current-1+images.length)%images.length;manual()}
+function manual(){resetZoom();showImg();restartSlideshow()}
+
+function startSlideshow(){
+  slideTimer=setInterval(()=>nextImg(),3000);
+}
+function restartSlideshow(){
+  clearInterval(slideTimer);
+  startSlideshow();
+}
+
+/* PINCH ZOOM */
+viewer.addEventListener("touchstart",e=>{
+  if(e.touches.length===2){
+    startDist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    lastScale=scale;
   }
 });
 
-function closeViewer(){
-  document.getElementById("viewer").style.display = "none";
+viewer.addEventListener("touchmove",e=>{
+  if(e.touches.length===2){
+    let dist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
+    img.style.transform=`scale(${scale})`;
+  }
+});
+
+img.ondblclick=resetZoom;
+function resetZoom(){
+  scale=1;
+  img.style.transform="scale(1)";
 }
 </script>
 
