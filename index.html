@@ -10,7 +10,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
-/* BACKGROUND */
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
@@ -27,12 +26,12 @@ body{
   -webkit-background-clip:text;
   color:transparent;
 }
-.header p{opacity:.9;margin-top:8px}
+.header p{opacity:.9}
 
 /* SECTION */
 .section{
   padding:20px 16px 60px;
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
 }
 .section h2{font-size:26px;margin-bottom:24px}
@@ -83,7 +82,7 @@ body{
 
 /* TEXT */
 .card h3{font-size:22px;margin-top:10px}
-.card p{font-size:14px;opacity:.85;margin-top:6px;line-height:1.6}
+.card p{font-size:14px;opacity:.85;margin-top:6px}
 .tag{
   display:inline-block;
   margin-top:10px;
@@ -106,7 +105,6 @@ body{
   z-index:9999;
 }
 
-/* MODAL BOX */
 .modal-box{
   background:#020617;
   border-radius:18px;
@@ -118,7 +116,6 @@ body{
   gap:12px;
 }
 
-/* IMAGE AREA */
 .image-area{
   position:relative;
   flex:1;
@@ -133,10 +130,8 @@ body{
   object-fit:contain;
   transform-origin:center;
   touch-action:none;
-  user-select:none;
 }
 
-/* ZOOM INDICATOR */
 .zoom-indicator{
   position:absolute;
   bottom:10px;
@@ -149,7 +144,6 @@ body{
   font-weight:600;
 }
 
-/* DESCRIPTION */
 .desc{
   font-size:14px;
   opacity:.9;
@@ -172,11 +166,10 @@ body{
   font-weight:700;
 }
 
-/* DESKTOP LAYOUT */
+/* DESKTOP */
 @media(min-width:900px){
   .slider{height:300px}
   .header h1{font-size:52px}
-
   .modal-box{
     flex-direction:row;
     width:80vw;
@@ -202,7 +195,7 @@ body{
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="close" onclick="closeModal()">✕</div>
+  <div class="close" id="closeBtn">✕</div>
   <div class="modal-box">
     <div class="image-area">
       <img id="modalImg">
@@ -213,8 +206,9 @@ body{
 </div>
 
 <script>
-/* DATA */
-const software=[{
+/* ========= DATA ========= */
+const software = [
+{
   name:"My Personal PDF Editor",
   desc:"Modern PDF editor with merge, split & Excel conversion.",
   tag:"PDF Tool",
@@ -223,37 +217,58 @@ const software=[{
     {src:"images/PDFMERGE2.jpg",desc:"PDF to Excel conversion preview"},
     {src:"images/PDFMERGE3.jpg",desc:"Mobile-friendly editor UI"}
   ]
-}];
+},
+{
+  name:"Student Performance Tracker",
+  desc:"Track daily coding progress and analytics.",
+  tag:"EdTech",
+  images:[
+    {src:"images/tool1.jpg",desc:"Student dashboard"},
+    {src:"images/tool2.jpg",desc:"Leaderboard analytics"},
+    {src:"images/tool3.jpg",desc:"Admin monitoring panel"}
+  ]
+}
+];
 
-const cards=document.getElementById("cards");
+const cards = document.getElementById("cards");
 
-/* BUILD CARD */
+/* ========= BUILD CARDS ========= */
 software.forEach(s=>{
   const card=document.createElement("div");
   card.className="card";
-  card.innerHTML=`
-    <div class="slider">
-      ${s.images.map((i,j)=>`
-        <img src="${i.src}" ${j===0?'class="active"':''}
-        onclick="openModal('${i.src}','${i.desc}')">
-      `).join("")}
-    </div>
-    <div class="dots"></div>
+
+  const slider=document.createElement("div");
+  slider.className="slider";
+
+  s.images.forEach((img,i)=>{
+    const im=document.createElement("img");
+    im.src=img.src;
+    if(i===0) im.classList.add("active");
+    im.dataset.desc=img.desc;
+    slider.appendChild(im);
+  });
+
+  const dots=document.createElement("div");
+  dots.className="dots";
+
+  card.append(slider,dots);
+  card.innerHTML+=`
     <h3>${s.name}</h3>
     <p>${s.desc}</p>
     <span class="tag">${s.tag}</span>
   `;
   cards.appendChild(card);
 
-  const imgs=card.querySelectorAll(".slider img");
-  const dots=card.querySelector(".dots");
+  const imgs=slider.querySelectorAll("img");
   let idx=0;
 
-  imgs.forEach((_,i)=>{
+  imgs.forEach((img,i)=>{
     const d=document.createElement("div");
     d.className="dot"+(i===0?" active":"");
     d.onclick=()=>change(i);
     dots.appendChild(d);
+
+    img.addEventListener("click",()=>openModal(img.src,img.dataset.desc));
   });
 
   function change(i){
@@ -267,21 +282,23 @@ software.forEach(s=>{
   setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* ===== ZOOM + PAN (FIXED) ===== */
+/* ========= MODAL ZOOM (SAFE LOAD) ========= */
 let scale=1,posX=0,posY=0,startX=0,startY=0,isDrag=false;
 
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
+const modalDesc=document.getElementById("modalDesc");
 const zoomVal=document.getElementById("zoomVal");
 
 function openModal(src,desc){
   modal.style.display="flex";
-  modalImg.onload=resetZoom;   // IMPORTANT FIX
+  modalDesc.textContent=desc;
+  modalImg.style.transform="none";
+  modalImg.onload=resetZoom;
   modalImg.src=src;
-  modalDesc.innerText=desc;
 }
 
-function closeModal(){modal.style.display="none"}
+document.getElementById("closeBtn").onclick=()=>modal.style.display="none";
 
 function resetZoom(){
   scale=1;posX=0;posY=0;
@@ -290,20 +307,14 @@ function resetZoom(){
 
 function update(){
   modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
-  zoomVal.innerText=scale.toFixed(1)+"×";
+  zoomVal.textContent=scale.toFixed(1)+"×";
 }
 
 modalImg.addEventListener("touchstart",e=>{
-  if(e.touches.length===1){
-    isDrag=true;
-    startX=e.touches[0].clientX-posX;
-    startY=e.touches[0].clientY-posY;
-  }
-  if(e.touches.length===2){
-    isDrag=false;
-  }
+  isDrag=true;
+  startX=e.touches[0].clientX-posX;
+  startY=e.touches[0].clientY-posY;
 });
-
 modalImg.addEventListener("touchmove",e=>{
   if(isDrag){
     posX=e.touches[0].clientX-startX;
@@ -311,7 +322,6 @@ modalImg.addEventListener("touchmove",e=>{
     update();
   }
 });
-
 modalImg.addEventListener("touchend",()=>isDrag=false);
 
 modalImg.addEventListener("wheel",e=>{
