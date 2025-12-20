@@ -2,16 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NanJoni Technologies</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NanJoni Technologies – Enterprise Digital Products</title>
 
+<meta name="description" content="NanJoni Technologies builds enterprise-grade web applications, EdTech platforms and AI-powered digital products.">
+<meta name="keywords" content="NanJoni Technologies, SaaS, Web Applications, EdTech, AI Products">
+<meta name="author" content="NanJoni Technologies">
+
+<meta property="og:title" content="NanJoni Technologies">
+<meta property="og:description" content="Enterprise-grade digital products & innovation">
+<meta property="og:type" content="website">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --accent:#22c55e;
   --glass:rgba(255,255,255,.08);
-  --stroke:rgba(255,255,255,.15);
+  --stroke:rgba(255,255,255,.18);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
@@ -22,87 +30,110 @@ body{
   overflow-x:hidden;
 }
 
-/* ================= AI BACKGROUND ================= */
-canvas{
-  position:fixed;
-  inset:0;
-  z-index:-1;
-}
-
 /* ================= HERO ================= */
 .hero{
+  position:relative;
   height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:20px;
+}
+.hero video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(.35);
+}
+.hero .content{
+  position:relative;
+  z-index:2;
 }
 .hero h1{
-  font-size:clamp(34px,6vw,64px);
+  font-size:clamp(38px,6vw,68px);
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
 .hero p{
-  opacity:.85;
-  margin-top:10px;
+  margin-top:12px;
   font-size:18px;
+  opacity:.9;
+}
+
+/* ================= MAGNETIC BUTTON ================= */
+.btn{
+  display:inline-block;
+  margin-top:30px;
+  padding:14px 32px;
+  border-radius:30px;
+  background:linear-gradient(90deg,#22c55e,#4ade80);
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+  position:relative;
 }
 
 /* ================= METRICS ================= */
 .metrics{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:20px;
-  max-width:1000px;
-  margin:60px auto;
+  max-width:1100px;
+  margin:80px auto;
   padding:0 16px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:22px;
 }
 .metric{
   background:var(--glass);
   border:1px solid var(--stroke);
-  border-radius:20px;
-  padding:24px;
+  border-radius:22px;
+  padding:28px;
   text-align:center;
+  backdrop-filter:blur(14px);
 }
-.metric h2{font-size:36px;color:var(--accent)}
+.metric h2{font-size:42px;color:var(--accent)}
 .metric p{opacity:.8}
 
-/* ================= SHOWCASE ================= */
+/* ================= SECTION ================= */
 .section{
   max-width:1200px;
   margin:auto;
-  padding:80px 16px;
+  padding:100px 16px;
 }
 .section h2{
-  font-size:32px;
-  margin-bottom:40px;
+  font-size:34px;
+  margin-bottom:50px;
 }
 
-/* CARD */
+/* ================= CARD ================= */
 .card{
+  position:relative;
   background:linear-gradient(180deg,var(--glass),transparent);
   border:1px solid var(--stroke);
-  border-radius:28px;
-  padding:22px;
-  margin-bottom:50px;
-  backdrop-filter:blur(16px);
-  box-shadow:0 40px 80px rgba(0,0,0,.6);
-  transition:.3s;
+  border-radius:30px;
+  padding:26px;
+  margin-bottom:60px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 50px 120px rgba(0,0,0,.7);
+  transition:.35s;
 }
-.card:hover{transform:translateY(-6px)}
+.card:hover{
+  transform:translateY(-12px) scale(1.01);
+}
 
 .front{
   display:flex;
   flex-direction:column;
-  gap:20px;
+  gap:24px;
 }
 
-/* SLIDER */
+/* IMAGE */
 .slider{
   aspect-ratio:16/9;
-  border-radius:22px;
+  border-radius:24px;
   overflow:hidden;
   position:relative;
 }
@@ -110,35 +141,42 @@ canvas{
   position:absolute;
   inset:0;
   opacity:0;
-  transition:.7s;
+  transition:.8s ease;
 }
 .slide.active{opacity:1}
 .slide img{
   width:100%;
   height:100%;
   object-fit:contain;
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.8));
 }
 
 /* DOTS */
 .dots{
   display:flex;
   justify-content:center;
-  gap:8px;
-  margin-bottom:10px;
+  gap:10px;
 }
 .dot{
-  width:10px;height:10px;border-radius:50%;
-  background:#64748b;cursor:pointer;
+  width:11px;height:11px;border-radius:50%;
+  background:#64748b;
+  cursor:pointer;
 }
 .dot.active{background:var(--accent)}
 
 /* CONTENT */
-.content h3{font-size:24px}
-.content p{opacity:.85;font-size:14.5px;line-height:1.6}
+.content h3{
+  font-size:26px;
+  margin-bottom:6px;
+}
+.content p{
+  opacity:.85;
+  line-height:1.7;
+}
 .tag{
   display:inline-block;
-  margin-top:12px;
-  padding:6px 16px;
+  margin-top:14px;
+  padding:6px 18px;
   background:linear-gradient(90deg,#22c55e,#4ade80);
   color:#000;
   border-radius:20px;
@@ -149,29 +187,46 @@ canvas{
 /* DESKTOP */
 @media(min-width:900px){
   .front{flex-direction:row;align-items:center}
-  .slider{flex:0 0 55%}
-  .content{flex:0 0 45%;padding-left:26px}
+  .slider{flex:0 0 56%}
+  .content{flex:0 0 44%;padding-left:30px}
+}
+
+/* ================= CMS EDITOR ================= */
+.editor{
+  max-width:900px;
+  margin:100px auto;
+  padding:20px;
+}
+textarea{
+  width:100%;
+  height:220px;
+  background:#020617;
+  color:#fff;
+  border:1px solid var(--stroke);
+  border-radius:16px;
+  padding:16px;
+  font-family:monospace;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="bg"></canvas>
-
 <!-- HERO -->
 <section class="hero">
-  <div>
+  <video autoplay muted loop playsinline src="images/hero.mp4"></video>
+  <div class="content">
     <h1>NanJoni Technologies</h1>
-    <p>Enterprise-grade Digital Products • AI-Driven Innovation</p>
+    <p>Enterprise-grade Digital Products & Innovation</p>
+    <div class="btn magnetic">Explore Products</div>
   </div>
 </section>
 
 <!-- METRICS -->
 <div class="metrics">
-  <div class="metric"><h2 data-count="25">0</h2><p>Products Built</p></div>
-  <div class="metric"><h2 data-count="1200">0</h2><p>Active Users</p></div>
-  <div class="metric"><h2 data-count="18">0</h2><p>Institutions Served</p></div>
+  <div class="metric"><h2 data-count="25">0</h2><p>Products</p></div>
+  <div class="metric"><h2 data-count="1200">0</h2><p>Users</p></div>
+  <div class="metric"><h2 data-count="18">0</h2><p>Institutions</p></div>
   <div class="metric"><h2 data-count="6">0</h2><p>Awards</p></div>
 </div>
 
@@ -181,98 +236,99 @@ canvas{
   <div id="showcase"></div>
 </section>
 
-<script>
-/* ================= AI BACKGROUND ================= */
-const c=document.getElementById("bg"),x=c.getContext("2d");
-function resize(){c.width=innerWidth;c.height=innerHeight}
-addEventListener("resize",resize);resize();
-let t=0;
-function draw(){
-  x.clearRect(0,0,c.width,c.height);
-  for(let i=0;i<80;i++){
-    let y=Math.sin(i+t)*40+c.height/2;
-    x.fillStyle="#22c55e22";
-    x.beginPath();
-    x.arc((i*50+t*10)%c.width,y,2,0,7);
-    x.fill();
-  }
-  t+=.01;requestAnimationFrame(draw);
-}
-draw();
+<!-- CMS -->
+<section class="editor">
+  <h2>Admin JSON Editor</h2>
+  <textarea id="json"></textarea>
+  <div class="btn magnetic" onclick="render()">Update Showcase</div>
+</section>
 
-/* ================= METRIC COUNTER ================= */
+<script>
+/* ================= MAGNETIC ================= */
+document.querySelectorAll(".magnetic").forEach(btn=>{
+  btn.addEventListener("mousemove",e=>{
+    const r=btn.getBoundingClientRect();
+    btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)/8}px,
+                                   ${(e.clientY-r.top-r.height/2)/8}px)`;
+  });
+  btn.addEventListener("mouseleave",()=>btn.style.transform="");
+});
+
+/* ================= COUNTERS ================= */
 document.querySelectorAll("[data-count]").forEach(el=>{
-  let max=+el.dataset.count;
-  let n=0;
+  let max=+el.dataset.count,n=0;
   let i=setInterval(()=>{
-    n+=Math.ceil(max/60);
+    n+=Math.ceil(max/50);
     if(n>=max){n=max;clearInterval(i)}
     el.textContent=n;
   },30);
 });
 
-/* ================= JSON DATA ================= */
-const software=[
+/* ================= CMS DATA ================= */
+let data=[
 {
-  title:"My Personal PDF Editor",
-  desc:"Enterprise-ready PDF merge, split and conversion platform.",
-  tag:"PDF Tool",
-  images:["PDFMERGE1.jpg","PDFMERGE2.jpg","PDFMERGE3.jpg"]
+"title":"My Personal PDF Editor",
+"desc":"Enterprise PDF merge, split and conversion platform.",
+"tag":"PDF Tool",
+"images":["PDFMERGE1.jpg","PDFMERGE2.jpg","PDFMERGE3.jpg"]
 },
 {
-  title:"Student Performance Tracker",
-  desc:"Analytics dashboard for coding and academic performance.",
-  tag:"EdTech",
-  images:["tool1.jpg","tool2.jpg","tool3.jpg"]
+"title":"Student Performance Tracker",
+"desc":"Analytics dashboard for academic and coding progress.",
+"tag":"EdTech",
+"images":["tool1.jpg","tool2.jpg","tool3.jpg"]
 }
 ];
 
-const root=document.getElementById("showcase");
+document.getElementById("json").value=JSON.stringify(data,null,2);
 
-/* ================= RENDER ================= */
-software.forEach(app=>{
-  const card=document.createElement("div");
-  card.className="card";
-  card.innerHTML=`
-    <div class="front">
-      <div>
-        <div class="dots"></div>
-        <div class="slider">
-          ${app.images.map((i,j)=>`
+function render(){
+  data=JSON.parse(document.getElementById("json").value);
+  const root=document.getElementById("showcase");
+  root.innerHTML="";
+  data.forEach(app=>{
+    const c=document.createElement("div");
+    c.className="card";
+    c.innerHTML=`
+      <div class="front">
+        <div>
+          <div class="dots"></div>
+          <div class="slider">
+            ${app.images.map((i,j)=>`
             <div class="slide ${j==0?"active":""}">
               <img src="images/${i}">
             </div>`).join("")}
+          </div>
         </div>
-      </div>
-      <div class="content">
-        <h3>${app.title}</h3>
-        <p>${app.desc}</p>
-        <span class="tag">${app.tag}</span>
-      </div>
-    </div>`;
-  root.appendChild(card);
+        <div class="content">
+          <h3>${app.title}</h3>
+          <p>${app.desc}</p>
+          <span class="tag">${app.tag}</span>
+        </div>
+      </div>`;
+    root.appendChild(c);
 
-  const slides=card.querySelectorAll(".slide");
-  const dots=card.querySelector(".dots");
-  let k=0;
-
-  slides.forEach((_,i)=>{
-    const d=document.createElement("div");
-    d.className="dot"+(i==0?" active":"");
-    d.onclick=()=>go(i);
-    dots.appendChild(d);
+    const slides=c.querySelectorAll(".slide");
+    const dots=c.querySelector(".dots");
+    let k=0;
+    slides.forEach((_,i)=>{
+      const d=document.createElement("div");
+      d.className="dot"+(i==0?" active":"");
+      d.onclick=()=>go(i);
+      dots.appendChild(d);
+    });
+    const ds=dots.children;
+    function go(i){
+      slides[k].classList.remove("active");
+      ds[k].classList.remove("active");
+      k=i;
+      slides[k].classList.add("active");
+      ds[k].classList.add("active");
+    }
+    setInterval(()=>go((k+1)%slides.length),3500);
   });
-
-  const ds=dots.querySelectorAll(".dot");
-  function go(i){
-    slides[k].classList.remove("active");
-    ds[k].classList.remove("active");
-    k=i;
-    slides[k].classList.add("active");
-    ds[k].classList.add("active");
-  }
-  setInterval(()=>go((k+1)%slides.length),3500);
-});
+}
+render();
 </script>
 
 </body>
