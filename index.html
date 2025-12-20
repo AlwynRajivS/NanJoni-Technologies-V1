@@ -97,7 +97,7 @@ body{
   font-weight:600;
 }
 
-/* MODAL */
+/* MODAL (NO FULL PAGE CHANGE) */
 .modal{
   position:fixed;
   inset:0;
@@ -164,7 +164,7 @@ body{
   <div id="cards"></div>
 </div>
 
-<!-- MODAL -->
+<!-- ZOOM MODAL -->
 <div class="modal" id="modal">
   <div class="close" onclick="closeModal()">✕</div>
   <div class="modal-content">
@@ -174,8 +174,8 @@ body{
 </div>
 
 <script>
-/* DATA */
-const software=[
+/* ================= DATA ================= */
+const software = [
 {
   name:"My Personal PDF Editor",
   desc:"Modern PDF editor with merge, split & Excel conversion.",
@@ -188,7 +188,7 @@ const software=[
 },
 {
   name:"Student Performance Tracker",
-  desc:"Track coding progress, analytics and rankings.",
+  desc:"Track daily coding progress, analytics and rankings.",
   tag:"EdTech",
   images:[
     {src:"images/tool1.jpg",desc:"Student dashboard"},
@@ -200,21 +200,25 @@ const software=[
 
 const cards=document.getElementById("cards");
 
-/* BUILD CARDS */
-software.forEach((s)=>{
+/* ============ BUILD CARDS ============ */
+software.forEach(s=>{
   const card=document.createElement("div");
   card.className="card";
+
   card.innerHTML=`
     <div class="slider">
       ${s.images.map((i,j)=>`
-        <img src="${i.src}" loading="lazy" ${j===0?'class="active"':''}
-        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">`).join("")}
+        <img src="${i.src}" loading="lazy"
+        ${j===0?'class="active"':''}
+        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">
+      `).join("")}
     </div>
     <div class="dots"></div>
     <h3>${s.name}</h3>
     <p>${s.desc}</p>
     <span class="tag">${s.tag}</span>
   `;
+
   cards.appendChild(card);
 
   const imgs=card.querySelectorAll(".slider img");
@@ -236,11 +240,14 @@ software.forEach((s)=>{
     dots.children[idx].classList.add("active");
   }
 
+  /* AUTO SLIDE (RETAINED) */
   setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* MODAL + PINCH ZOOM */
-let scale=1,startDist=0,lastScale=1;
+/* ============ MODAL ZOOM + PAN ============ */
+let scale=1,lastScale=1,startDist=0;
+let posX=0,posY=0,startX=0,startY=0,isDragging=false;
+
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
 const modalDesc=document.getElementById("modalDesc");
@@ -255,6 +262,15 @@ function closeModal(){
   modal.style.display="none";
 }
 
+/* RESET */
+function resetZoom(){
+  scale=1;
+  posX=0;
+  posY=0;
+  modalImg.style.transform="translate(0px,0px) scale(1)";
+}
+
+/* TOUCH */
 modalImg.addEventListener("touchstart",e=>{
   if(e.touches.length===2){
     startDist=Math.hypot(
@@ -262,6 +278,11 @@ modalImg.addEventListener("touchstart",e=>{
       e.touches[0].clientY-e.touches[1].clientY
     );
     lastScale=scale;
+  }
+  if(e.touches.length===1 && scale>1){
+    isDragging=true;
+    startX=e.touches[0].clientX-posX;
+    startY=e.touches[0].clientY-posY;
   }
 });
 
@@ -272,16 +293,35 @@ modalImg.addEventListener("touchmove",e=>{
       e.touches[0].clientY-e.touches[1].clientY
     );
     scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
-    modalImg.style.transform=`scale(${scale})`;
   }
+  if(isDragging && e.touches.length===1){
+    posX=e.touches[0].clientX-startX;
+    posY=e.touches[0].clientY-startY;
+  }
+  modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
 });
 
-modalImg.ondblclick=resetZoom;
+modalImg.addEventListener("touchend",()=>isDragging=false);
 
-function resetZoom(){
-  scale=1;
-  modalImg.style.transform="scale(1)";
-}
+/* MOUSE (DESKTOP) */
+modalImg.addEventListener("mousedown",e=>{
+  if(scale>1){
+    isDragging=true;
+    startX=e.clientX-posX;
+    startY=e.clientY-posY;
+  }
+});
+window.addEventListener("mousemove",e=>{
+  if(isDragging){
+    posX=e.clientX-startX;
+    posY=e.clientY-startY;
+    modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
+  }
+});
+window.addEventListener("mouseup",()=>isDragging=false);
+
+/* DOUBLE CLICK RESET */
+modalImg.ondblclick=resetZoom;
 </script>
 
 </body>
