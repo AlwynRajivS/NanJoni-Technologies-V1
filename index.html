@@ -10,6 +10,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
+/* BACKGROUND */
 body{
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
@@ -26,12 +27,12 @@ body{
   -webkit-background-clip:text;
   color:transparent;
 }
-.header p{opacity:.9}
+.header p{opacity:.9;margin-top:8px}
 
 /* SECTION */
 .section{
   padding:20px 16px 60px;
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
 }
 .section h2{font-size:26px;margin-bottom:24px}
@@ -43,6 +44,7 @@ body{
   padding:16px;
   margin-bottom:36px;
   backdrop-filter:blur(14px);
+  box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
 /* SLIDER */
@@ -82,7 +84,7 @@ body{
 
 /* TEXT */
 .card h3{font-size:22px;margin-top:10px}
-.card p{font-size:14px;opacity:.85;margin-top:6px}
+.card p{font-size:14px;opacity:.85;margin-top:6px;line-height:1.6}
 .tag{
   display:inline-block;
   margin-top:10px;
@@ -94,7 +96,7 @@ body{
   font-weight:600;
 }
 
-/* ================= MODAL ================= */
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -108,52 +110,55 @@ body{
 .modal-box{
   background:#020617;
   border-radius:18px;
-  max-width:95vw;
-  max-height:95vh;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.image-area{
+  max-width:92vw;
+  max-height:92vh;
+  padding:12px;
   position:relative;
-  flex:1;
-  background:#000;
-  border-radius:12px;
-  overflow:hidden;
 }
 
-.image-area img{
+/* PAN AREA (IMPORTANT FIX) */
+.pan-area{
+  position:relative;
+  width:80vw;
+  max-width:900px;
+  height:60vh;
+  overflow:hidden;
+  touch-action:none;
+}
+
+.pan-area img{
   width:100%;
   height:100%;
   object-fit:contain;
   transform-origin:center;
-  touch-action:none;
+  transition:transform .12s;
 }
 
+/* ZOOM INDICATOR */
 .zoom-indicator{
   position:absolute;
   bottom:10px;
   right:10px;
-  background:#22c55e;
+  background:rgba(34,197,94,.9);
   color:#000;
   padding:4px 10px;
-  border-radius:14px;
+  border-radius:16px;
   font-size:12px;
   font-weight:600;
 }
 
-.desc{
+/* MODAL TEXT */
+.modal-box p{
+  margin-top:10px;
   font-size:14px;
-  opacity:.9;
+  opacity:.85;
 }
 
 /* CLOSE */
 .close{
   position:absolute;
-  top:16px;
-  right:16px;
+  top:-14px;
+  right:-14px;
   background:#22c55e;
   color:#000;
   width:40px;
@@ -170,13 +175,6 @@ body{
 @media(min-width:900px){
   .slider{height:300px}
   .header h1{font-size:52px}
-  .modal-box{
-    flex-direction:row;
-    width:80vw;
-    height:70vh;
-  }
-  .image-area{flex:0 0 60%}
-  .desc{flex:0 0 40%;padding-left:16px}
 }
 </style>
 </head>
@@ -195,19 +193,21 @@ body{
 
 <!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="close" id="closeBtn">✕</div>
   <div class="modal-box">
-    <div class="image-area">
+    <div class="close" onclick="closeModal()">✕</div>
+
+    <div class="pan-area" id="panArea">
       <img id="modalImg">
       <div class="zoom-indicator" id="zoomVal">1×</div>
     </div>
-    <div class="desc" id="modalDesc"></div>
+
+    <p id="modalDesc"></p>
   </div>
 </div>
 
 <script>
-/* ========= DATA ========= */
-const software = [
+/* DATA */
+const software=[
 {
   name:"My Personal PDF Editor",
   desc:"Modern PDF editor with merge, split & Excel conversion.",
@@ -220,7 +220,7 @@ const software = [
 },
 {
   name:"Student Performance Tracker",
-  desc:"Track daily coding progress and analytics.",
+  desc:"Track daily coding progress, analytics and rankings.",
   tag:"EdTech",
   images:[
     {src:"images/tool1.jpg",desc:"Student dashboard"},
@@ -230,45 +230,37 @@ const software = [
 }
 ];
 
-const cards = document.getElementById("cards");
+const cards=document.getElementById("cards");
 
-/* ========= BUILD CARDS ========= */
+/* BUILD CARDS */
 software.forEach(s=>{
   const card=document.createElement("div");
   card.className="card";
 
-  const slider=document.createElement("div");
-  slider.className="slider";
-
-  s.images.forEach((img,i)=>{
-    const im=document.createElement("img");
-    im.src=img.src;
-    if(i===0) im.classList.add("active");
-    im.dataset.desc=img.desc;
-    slider.appendChild(im);
-  });
-
-  const dots=document.createElement("div");
-  dots.className="dots";
-
-  card.append(slider,dots);
-  card.innerHTML+=`
+  card.innerHTML=`
+    <div class="slider">
+      ${s.images.map((i,j)=>`
+        <img src="${i.src}" ${j===0?'class="active"':''}
+        onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">
+      `).join("")}
+    </div>
+    <div class="dots"></div>
     <h3>${s.name}</h3>
     <p>${s.desc}</p>
     <span class="tag">${s.tag}</span>
   `;
+
   cards.appendChild(card);
 
-  const imgs=slider.querySelectorAll("img");
+  const imgs=card.querySelectorAll(".slider img");
+  const dots=card.querySelector(".dots");
   let idx=0;
 
-  imgs.forEach((img,i)=>{
+  imgs.forEach((_,i)=>{
     const d=document.createElement("div");
     d.className="dot"+(i===0?" active":"");
     d.onclick=()=>change(i);
     dots.appendChild(d);
-
-    img.addEventListener("click",()=>openModal(img.src,img.dataset.desc));
   });
 
   function change(i){
@@ -282,8 +274,9 @@ software.forEach(s=>{
   setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* ========= MODAL ZOOM (SAFE LOAD) ========= */
-let scale=1,posX=0,posY=0,startX=0,startY=0,isDrag=false;
+/* ZOOM + PAN */
+let scale=1,lastScale=1,startDist=0;
+let posX=0,posY=0,startX=0,startY=0,isDragging=false;
 
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
@@ -292,44 +285,59 @@ const zoomVal=document.getElementById("zoomVal");
 
 function openModal(src,desc){
   modal.style.display="flex";
-  modalDesc.textContent=desc;
-  modalImg.style.transform="none";
-  modalImg.onload=resetZoom;
   modalImg.src=src;
+  modalDesc.innerText=desc;
+  resetZoom();
 }
 
-document.getElementById("closeBtn").onclick=()=>modal.style.display="none";
+function closeModal(){
+  modal.style.display="none";
+}
 
 function resetZoom(){
   scale=1;posX=0;posY=0;
-  update();
+  updateTransform();
 }
 
-function update(){
+function updateTransform(){
   modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
-  zoomVal.textContent=scale.toFixed(1)+"×";
+  zoomVal.innerText=scale.toFixed(1)+"×";
 }
 
+/* TOUCH */
 modalImg.addEventListener("touchstart",e=>{
-  isDrag=true;
-  startX=e.touches[0].clientX-posX;
-  startY=e.touches[0].clientY-posY;
-});
-modalImg.addEventListener("touchmove",e=>{
-  if(isDrag){
-    posX=e.touches[0].clientX-startX;
-    posY=e.touches[0].clientY-startY;
-    update();
+  if(e.touches.length===2){
+    startDist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    lastScale=scale;
+  }
+  if(e.touches.length===1 && scale>1){
+    isDragging=true;
+    startX=e.touches[0].clientX-posX;
+    startY=e.touches[0].clientY-posY;
   }
 });
-modalImg.addEventListener("touchend",()=>isDrag=false);
 
-modalImg.addEventListener("wheel",e=>{
-  e.preventDefault();
-  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
-  update();
+modalImg.addEventListener("touchmove",e=>{
+  if(e.touches.length===2){
+    let dist=Math.hypot(
+      e.touches[0].clientX-e.touches[1].clientX,
+      e.touches[0].clientY-e.touches[1].clientY
+    );
+    scale=Math.min(Math.max(lastScale*(dist/startDist),1),4);
+  }
+  if(isDragging && e.touches.length===1){
+    posX=e.touches[0].clientX-startX;
+    posY=e.touches[0].clientY-startY;
+  }
+  updateTransform();
 });
 
+modalImg.addEventListener("touchend",()=>isDragging=false);
+
+/* DOUBLE TAP RESET */
 modalImg.ondblclick=resetZoom;
 </script>
 
