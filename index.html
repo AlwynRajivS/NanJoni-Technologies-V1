@@ -17,124 +17,85 @@
 
 /* BACKGROUND */
 body{
-  background:
-    radial-gradient(circle at top,#1e3a8a,#020617);
+  background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
-  overflow-x:hidden;
 }
 
 /* HERO */
 .hero{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  padding:70px 16px 50px;
   text-align:center;
-  padding:20px;
 }
 .hero h1{
-  font-size:52px;
+  font-size:40px;
   font-weight:700;
   background:linear-gradient(90deg,#38bdf8,#22c55e);
   -webkit-background-clip:text;
   color:transparent;
 }
 .hero p{
-  margin-top:14px;
-  font-size:18px;
+  margin-top:10px;
   opacity:.9;
-}
-.hero .line{
-  width:120px;
-  height:4px;
-  margin-top:20px;
-  background:linear-gradient(90deg,#22c55e,#38bdf8);
-  border-radius:20px;
+  font-size:16px;
 }
 
 /* SECTION */
 .section{
-  max-width:1300px;
-  margin:auto;
-  padding:60px 20px;
+  padding:30px 16px 60px;
 }
 .section h2{
-  text-align:center;
-  font-size:34px;
-  margin-bottom:60px;
-}
-
-/* SOFTWARE GRID */
-.software{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:40px;
+  font-size:26px;
+  margin-bottom:25px;
 }
 
 /* CARD */
 .card{
-  position:relative;
-  background:rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.08);
   border-radius:26px;
-  padding:20px;
+  padding:16px;
+  margin-bottom:35px;
   backdrop-filter:blur(14px);
-  transition:.5s;
-  box-shadow:0 30px 60px rgba(0,0,0,.35);
-}
-.card:hover{
-  transform:translateY(-12px) scale(1.02);
-  box-shadow:0 40px 90px rgba(0,0,0,.6);
+  box-shadow:0 25px 50px rgba(0,0,0,.45);
 }
 
-/* GLOW */
-.card::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  border-radius:26px;
-  background:linear-gradient(120deg,#38bdf8,#22c55e);
-  opacity:0;
-  transition:.4s;
-  z-index:-1;
+/* IMAGE CAROUSEL */
+.carousel{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding-bottom:6px;
 }
-.card:hover::before{
-  opacity:1;
-}
+.carousel::-webkit-scrollbar{display:none}
 
-/* SLIDER */
-.slider{
-  height:220px;
-  border-radius:18px;
-  overflow:hidden;
-  position:relative;
-}
-.slider img{
-  position:absolute;
-  width:100%;
-  height:100%;
+.carousel img{
+  flex:0 0 75%;
+  height:200px;
   object-fit:cover;
-  opacity:0;
-  transition:opacity 1s;
+  border-radius:18px;
+  scroll-snap-align:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.45);
+  cursor:pointer;
+  transition:.3s;
 }
-.slider img.active{
-  opacity:1;
+.carousel img:hover{
+  transform:scale(1.05);
 }
 
 /* CONTENT */
 .card h3{
-  margin-top:16px;
-  font-size:24px;
+  margin-top:18px;
+  font-size:22px;
 }
 .card p{
-  margin-top:10px;
+  margin-top:8px;
   font-size:14px;
   opacity:.85;
   line-height:1.6;
 }
 .tag{
   display:inline-block;
-  margin-top:14px;
+  margin-top:12px;
   padding:6px 16px;
   border-radius:20px;
   background:#22c55e;
@@ -143,17 +104,58 @@ body{
   font-size:12px;
 }
 
+/* FULLSCREEN VIEWER */
+.viewer{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.viewer img{
+  max-width:95%;
+  max-height:90%;
+  border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.close{
+  position:absolute;
+  top:20px;
+  right:20px;
+  font-size:28px;
+  background:#22c55e;
+  color:#000;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-weight:700;
+}
+
+/* DESKTOP */
+@media(min-width:900px){
+  .section{
+    max-width:1200px;
+    margin:auto;
+  }
+  .hero h1{font-size:52px}
+  .carousel img{
+    flex:0 0 32%;
+    height:230px;
+  }
+}
+
 /* FOOTER */
 footer{
   text-align:center;
-  padding:25px;
+  padding:20px;
   opacity:.6;
-  font-size:14px;
-}
-
-/* RESPONSIVE */
-@media(max-width:600px){
-  .hero h1{font-size:40px}
+  font-size:13px;
 }
 </style>
 </head>
@@ -161,68 +163,67 @@ footer{
 <body>
 
 <!-- HERO -->
-<section class="hero">
+<div class="hero">
   <h1>NanJoni Technologies</h1>
-  <p>Premium Web Applications • Smart Digital Innovation</p>
-  <div class="line"></div>
-</section>
+  <p>Premium Web Applications • Innovation Driven</p>
+</div>
 
 <!-- SHOWCASE -->
-<section class="section">
-  <h2>Startup Software Showcase</h2>
+<div class="section">
+  <h2>Software Showcase</h2>
 
-  <div class="software">
-
-    <!-- SOFTWARE 1 -->
-    <div class="card">
-      <div class="slider">
-        <img src="images/PDFMERGE1.jpg" class="active">
-        <img src="images/PDFMERGE2.jpg">
-        <img src="images/pdf3.jpg">
-      </div>
-      <h3>My Personal PDF Editor</h3>
-      <p>
-        A professional-grade PDF solution with merge, split, zoom,
-        preview and PDF-to-Excel conversion, designed for speed,
-        simplicity and elegance.
-      </p>
-      <span class="tag">PDF Tool</span>
+  <!-- SOFTWARE 1 -->
+  <div class="card">
+    <div class="carousel">
+      <img src="images/PDFMERGE1.jpg">
+      <img src="images/PDFMERGE2.jpg">
     </div>
-
-    <!-- SOFTWARE 2 -->
-    <div class="card">
-      <div class="slider">
-        <img src="images/tool1.jpg" class="active">
-        <img src="images/tool2.jpg">
-      </div>
-      <h3>Student Performance Tracker</h3>
-      <p>
-        A powerful analytics platform to track student progress,
-        leaderboards, daily coding metrics and performance insights
-        in real time.
-      </p>
-      <span class="tag">EdTech</span>
-    </div>
-
+    <h3>My Personal PDF Editor</h3>
+    <p>
+      A modern, mobile-friendly PDF editor supporting merge, split,
+      zoom, preview and PDF-to-Excel conversion with elegant UI.
+    </p>
+    <span class="tag">PDF Tool</span>
   </div>
-</section>
+
+  <!-- SOFTWARE 2 -->
+  <div class="card">
+    <div class="carousel">
+      <img src="images/tool1.jpg">
+      <img src="images/tool2.jpg">
+      <img src="images/tool3.jpg">
+    </div>
+    <h3>Student Performance Tracker</h3>
+    <p>
+      A smart analytics platform for tracking daily coding progress,
+      rankings, insights and admin dashboards.
+    </p>
+    <span class="tag">EdTech Platform</span>
+  </div>
+</div>
 
 <footer>
-  © 2025 NanJoni Technologies • Crafted for Innovation
+  © 2025 NanJoni Technologies • Premium Startup UI
 </footer>
 
+<!-- FULLSCREEN VIEWER -->
+<div class="viewer" id="viewer">
+  <div class="close" onclick="closeViewer()">✕</div>
+  <img id="viewerImg">
+</div>
+
 <script>
-document.querySelectorAll(".slider").forEach(slider=>{
-  const imgs = slider.querySelectorAll("img");
-  let i = 0;
-  setInterval(()=>{
-    imgs[i].classList.remove("active");
-    i = (i + 1) % imgs.length;
-    imgs[i].classList.add("active");
-  },3500);
+document.querySelectorAll(".carousel img").forEach(img=>{
+  img.onclick = () => {
+    document.getElementById("viewerImg").src = img.src;
+    document.getElementById("viewer").style.display = "flex";
+  }
 });
+
+function closeViewer(){
+  document.getElementById("viewer").style.display = "none";
+}
 </script>
 
 </body>
 </html>
-          
