@@ -64,7 +64,6 @@ body{
   opacity:0;
   transition:opacity .6s;
   cursor:zoom-in;
-  will-change:opacity;
 }
 .slider img.active{opacity:1}
 
@@ -97,7 +96,7 @@ body{
   font-weight:600;
 }
 
-/* MODAL (NO FULL PAGE CHANGE) */
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -107,31 +106,59 @@ body{
   justify-content:center;
   z-index:9999;
 }
-.modal-content{
+
+.modal-box{
   background:#020617;
   border-radius:18px;
   max-width:92vw;
   max-height:92vh;
-  padding:16px;
+  padding:12px;
+  position:relative;
+}
+
+/* PAN AREA (IMPORTANT FIX) */
+.pan-area{
+  position:relative;
+  width:80vw;
+  max-width:900px;
+  height:60vh;
   overflow:hidden;
-}
-.modal img{
-  width:100%;
-  max-height:60vh;
-  object-fit:contain;
   touch-action:none;
-  transform-origin:center;
-  transition:transform .15s;
 }
-.modal p{
-  margin-top:12px;
+
+.pan-area img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transform-origin:center;
+  transition:transform .12s;
+}
+
+/* ZOOM INDICATOR */
+.zoom-indicator{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  background:rgba(34,197,94,.9);
+  color:#000;
+  padding:4px 10px;
+  border-radius:16px;
+  font-size:12px;
+  font-weight:600;
+}
+
+/* MODAL TEXT */
+.modal-box p{
+  margin-top:10px;
   font-size:14px;
   opacity:.85;
 }
+
+/* CLOSE */
 .close{
   position:absolute;
-  top:20px;
-  right:20px;
+  top:-14px;
+  right:-14px;
   background:#22c55e;
   color:#000;
   width:40px;
@@ -164,18 +191,23 @@ body{
   <div id="cards"></div>
 </div>
 
-<!-- ZOOM MODAL -->
+<!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="close" onclick="closeModal()">✕</div>
-  <div class="modal-content">
-    <img id="modalImg">
+  <div class="modal-box">
+    <div class="close" onclick="closeModal()">✕</div>
+
+    <div class="pan-area" id="panArea">
+      <img id="modalImg">
+      <div class="zoom-indicator" id="zoomVal">1×</div>
+    </div>
+
     <p id="modalDesc"></p>
   </div>
 </div>
 
 <script>
-/* ================= DATA ================= */
-const software = [
+/* DATA */
+const software=[
 {
   name:"My Personal PDF Editor",
   desc:"Modern PDF editor with merge, split & Excel conversion.",
@@ -200,7 +232,7 @@ const software = [
 
 const cards=document.getElementById("cards");
 
-/* ============ BUILD CARDS ============ */
+/* BUILD CARDS */
 software.forEach(s=>{
   const card=document.createElement("div");
   card.className="card";
@@ -208,8 +240,7 @@ software.forEach(s=>{
   card.innerHTML=`
     <div class="slider">
       ${s.images.map((i,j)=>`
-        <img src="${i.src}" loading="lazy"
-        ${j===0?'class="active"':''}
+        <img src="${i.src}" ${j===0?'class="active"':''}
         onclick="openModal('${i.src}','${i.desc.replace(/'/g,"")}')">
       `).join("")}
     </div>
@@ -240,17 +271,17 @@ software.forEach(s=>{
     dots.children[idx].classList.add("active");
   }
 
-  /* AUTO SLIDE (RETAINED) */
   setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* ============ MODAL ZOOM + PAN ============ */
+/* ZOOM + PAN */
 let scale=1,lastScale=1,startDist=0;
 let posX=0,posY=0,startX=0,startY=0,isDragging=false;
 
 const modal=document.getElementById("modal");
 const modalImg=document.getElementById("modalImg");
 const modalDesc=document.getElementById("modalDesc");
+const zoomVal=document.getElementById("zoomVal");
 
 function openModal(src,desc){
   modal.style.display="flex";
@@ -258,16 +289,19 @@ function openModal(src,desc){
   modalDesc.innerText=desc;
   resetZoom();
 }
+
 function closeModal(){
   modal.style.display="none";
 }
 
-/* RESET */
 function resetZoom(){
-  scale=1;
-  posX=0;
-  posY=0;
-  modalImg.style.transform="translate(0px,0px) scale(1)";
+  scale=1;posX=0;posY=0;
+  updateTransform();
+}
+
+function updateTransform(){
+  modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
+  zoomVal.innerText=scale.toFixed(1)+"×";
 }
 
 /* TOUCH */
@@ -298,29 +332,12 @@ modalImg.addEventListener("touchmove",e=>{
     posX=e.touches[0].clientX-startX;
     posY=e.touches[0].clientY-startY;
   }
-  modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
+  updateTransform();
 });
 
 modalImg.addEventListener("touchend",()=>isDragging=false);
 
-/* MOUSE (DESKTOP) */
-modalImg.addEventListener("mousedown",e=>{
-  if(scale>1){
-    isDragging=true;
-    startX=e.clientX-posX;
-    startY=e.clientY-posY;
-  }
-});
-window.addEventListener("mousemove",e=>{
-  if(isDragging){
-    posX=e.clientX-startX;
-    posY=e.clientY-startY;
-    modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
-  }
-});
-window.addEventListener("mouseup",()=>isDragging=false);
-
-/* DOUBLE CLICK RESET */
+/* DOUBLE TAP RESET */
 modalImg.ondblclick=resetZoom;
 </script>
 
