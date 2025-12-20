@@ -60,12 +60,10 @@ body{
   height:100%;
   object-fit:contain;
   opacity:0;
-  transition:opacity .6s ease;
+  transition:opacity .6s;
   cursor:zoom-in;
 }
-.slider img.active{
-  opacity:1;
-}
+.slider img.active{opacity:1}
 
 /* DOTS */
 .dots{
@@ -82,7 +80,7 @@ body{
 }
 .dot.active{background:#22c55e}
 
-/* CARD TEXT */
+/* TEXT */
 .card h3{font-size:22px;margin-top:10px}
 .card p{font-size:14px;opacity:.85;margin-top:6px}
 .tag{
@@ -96,7 +94,7 @@ body{
   font-weight:600;
 }
 
-/* MODAL */
+/* ================= MODAL ================= */
 .modal{
   position:fixed;
   inset:0;
@@ -106,6 +104,7 @@ body{
   justify-content:center;
   z-index:9999;
 }
+
 .modal-box{
   background:#020617;
   border-radius:18px;
@@ -114,20 +113,25 @@ body{
   padding:16px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:12px;
 }
+
 .image-area{
   position:relative;
+  flex:1;
   background:#000;
   border-radius:12px;
   overflow:hidden;
-  flex:1;
 }
+
 .image-area img{
   width:100%;
   height:100%;
   object-fit:contain;
+  transform-origin:center;
+  touch-action:none;
 }
+
 .zoom-indicator{
   position:absolute;
   bottom:10px;
@@ -139,10 +143,13 @@ body{
   font-size:12px;
   font-weight:600;
 }
-.modal-desc{
+
+.desc{
   font-size:14px;
   opacity:.9;
 }
+
+/* CLOSE */
 .close{
   position:absolute;
   top:16px;
@@ -169,12 +176,7 @@ body{
     height:70vh;
   }
   .image-area{flex:0 0 60%}
-  .modal-desc{
-    flex:0 0 40%;
-    padding-left:16px;
-    display:flex;
-    align-items:center;
-  }
+  .desc{flex:0 0 40%;padding-left:16px}
 }
 </style>
 </head>
@@ -199,12 +201,12 @@ body{
       <img id="modalImg">
       <div class="zoom-indicator" id="zoomVal">1×</div>
     </div>
-    <div class="modal-desc" id="modalDesc"></div>
+    <div class="desc" id="modalDesc"></div>
   </div>
 </div>
 
 <script>
-/* DATA */
+/* ========= DATA ========= */
 const software = [
 {
   name:"My Personal PDF Editor",
@@ -218,7 +220,7 @@ const software = [
 },
 {
   name:"Student Performance Tracker",
-  desc:"Track daily coding progress, analytics and rankings.",
+  desc:"Track daily coding progress and analytics.",
   tag:"EdTech",
   images:[
     {src:"images/tool1.jpg",desc:"Student dashboard"},
@@ -230,77 +232,105 @@ const software = [
 
 const cards = document.getElementById("cards");
 
-/* BUILD CARDS */
-software.forEach(app=>{
-  const card = document.createElement("div");
-  card.className = "card";
+/* ========= BUILD CARDS ========= */
+software.forEach(s=>{
+  const card=document.createElement("div");
+  card.className="card";
 
-  const slider = document.createElement("div");
-  slider.className = "slider";
+  const slider=document.createElement("div");
+  slider.className="slider";
 
-  app.images.forEach((img,i)=>{
-    const im = document.createElement("img");
-    im.src = img.src;
-    im.loading = "lazy";
-    im.decoding = "async";
-    im.dataset.desc = img.desc;
-    if(i === 0) im.classList.add("active");
+  s.images.forEach((img,i)=>{
+    const im=document.createElement("img");
+    im.src=img.src;
+    if(i===0) im.classList.add("active");
+    im.dataset.desc=img.desc;
     slider.appendChild(im);
   });
 
-  const dots = document.createElement("div");
-  dots.className = "dots";
+  const dots=document.createElement("div");
+  dots.className="dots";
 
-  card.appendChild(slider);
-  card.appendChild(dots);
-  card.innerHTML += `
-    <h3>${app.name}</h3>
-    <p>${app.desc}</p>
-    <span class="tag">${app.tag}</span>
+  card.append(slider,dots);
+  card.innerHTML+=`
+    <h3>${s.name}</h3>
+    <p>${s.desc}</p>
+    <span class="tag">${s.tag}</span>
   `;
   cards.appendChild(card);
 
-  const imgs = slider.querySelectorAll("img");
-  let index = 0;
+  const imgs=slider.querySelectorAll("img");
+  let idx=0;
 
   imgs.forEach((img,i)=>{
-    const d = document.createElement("div");
-    d.className = "dot" + (i===0 ? " active" : "");
+    const d=document.createElement("div");
+    d.className="dot"+(i===0?" active":"");
+    d.onclick=()=>change(i);
     dots.appendChild(d);
 
-    d.onclick = ()=>changeSlide(i);
-    img.onclick = ()=>openModal(img.src, img.dataset.desc);
+    img.addEventListener("click",()=>openModal(img.src,img.dataset.desc));
   });
 
-  function changeSlide(i){
-    imgs[index].classList.remove("active");
-    dots.children[index].classList.remove("active");
-    index = i;
-    imgs[index].classList.add("active");
-    dots.children[index].classList.add("active");
+  function change(i){
+    imgs[idx].classList.remove("active");
+    dots.children[idx].classList.remove("active");
+    idx=i;
+    imgs[idx].classList.add("active");
+    dots.children[idx].classList.add("active");
   }
 
-  /* AUTO SLIDESHOW – FIXED */
-  setInterval(()=>{
-    changeSlide((index + 1) % imgs.length);
-  },3000);
+  setInterval(()=>change((idx+1)%imgs.length),3000);
 });
 
-/* MODAL */
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-const modalDesc = document.getElementById("modalDesc");
-const zoomVal = document.getElementById("zoomVal");
+/* ========= MODAL ZOOM (SAFE LOAD) ========= */
+let scale=1,posX=0,posY=0,startX=0,startY=0,isDrag=false;
 
-function openModal(src, desc){
-  modal.style.display = "flex";
-  modalDesc.textContent = desc;
-  modalImg.onload = ()=>{ zoomVal.textContent = "1×"; };
-  modalImg.src = src;
+const modal=document.getElementById("modal");
+const modalImg=document.getElementById("modalImg");
+const modalDesc=document.getElementById("modalDesc");
+const zoomVal=document.getElementById("zoomVal");
+
+function openModal(src,desc){
+  modal.style.display="flex";
+  modalDesc.textContent=desc;
+  modalImg.style.transform="none";
+  modalImg.onload=resetZoom;
+  modalImg.src=src;
 }
-document.getElementById("closeBtn").onclick = ()=>{
-  modal.style.display = "none";
-};
+
+document.getElementById("closeBtn").onclick=()=>modal.style.display="none";
+
+function resetZoom(){
+  scale=1;posX=0;posY=0;
+  update();
+}
+
+function update(){
+  modalImg.style.transform=`translate(${posX}px,${posY}px) scale(${scale})`;
+  zoomVal.textContent=scale.toFixed(1)+"×";
+}
+
+modalImg.addEventListener("touchstart",e=>{
+  isDrag=true;
+  startX=e.touches[0].clientX-posX;
+  startY=e.touches[0].clientY-posY;
+});
+modalImg.addEventListener("touchmove",e=>{
+  if(isDrag){
+    posX=e.touches[0].clientX-startX;
+    posY=e.touches[0].clientY-startY;
+    update();
+  }
+});
+modalImg.addEventListener("touchend",()=>isDrag=false);
+
+modalImg.addEventListener("wheel",e=>{
+  e.preventDefault();
+  scale=Math.min(Math.max(scale+(e.deltaY<0?0.1:-0.1),1),4);
+  update();
+});
+
+modalImg.ondblclick=resetZoom;
 </script>
 
 </body>
