@@ -168,25 +168,30 @@ body{
 }
 
 /* ===== LOGO IMAGE ===== */
+/* ===== LOGO IMAGE – BIGGER GLOW ===== */
 .hero-logo{
-  width:110px;        /* BIG & CLEAR */
+  width:110px;
   height:auto;
   display:block;
 
+  /* BIGGER & SOFTER GLOW */
   filter:
-    drop-shadow(0 6px 18px rgba(34,197,94,.55))
-    drop-shadow(0 6px 26px rgba(56,189,248,.45));
+    drop-shadow(0 0 28px rgba(34,197,94,.65))
+    drop-shadow(0 0 46px rgba(56,189,248,.55))
+    drop-shadow(0 0 72px rgba(34,197,94,.35));
 
-  transition:filter .4s ease, transform .4s ease;
+  transition:filter .45s ease, transform .45s ease;
 }
 
-/* ===== GLOW ONLY ON HOVER ===== */
+/* ===== EVEN STRONGER ON HOVER ===== */
 .logo-wrap:hover .hero-logo{
   filter:
-    drop-shadow(0 0 30px rgba(34,197,94,.85))
-    drop-shadow(0 0 48px rgba(56,189,248,.75));
-  transform:scale(1.04);
+    drop-shadow(0 0 38px rgba(34,197,94,.95))
+    drop-shadow(0 0 64px rgba(56,189,248,.85))
+    drop-shadow(0 0 100px rgba(34,197,94,.6));
+  transform:scale(1.05);
 }
+
 
 /* ===== ANIMATIONS ===== */
 @keyframes float{
