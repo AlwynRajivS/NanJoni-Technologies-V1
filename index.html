@@ -151,24 +151,26 @@ body{
   font-weight:600;
 }
 
-/* ===== LOGO WRAPPER (CENTERED & BLENDED) ===== */
+/* ===== LOGO WRAP – CENTERED & PREMIUM ===== */
 .logo-wrap{
   display:flex;
   align-items:center;
   justify-content:center;
 
-  width:100px;
-  height:100px;
-  margin:0 auto 22px;   /* 👈 perfectly centered */
+  width:140px;
+  height:140px;
+  margin:0 auto 22px; /* perfect center */
 
   border-radius:28px;
 
-  /* SAME COLOR FAMILY AS LOGO */
+  /* animated gradient background */
   background:linear-gradient(
     135deg,
-    rgba(56,189,248,0.25),
-    rgba(34,197,94,0.28)
+    rgba(56,189,248,0.28),
+    rgba(34,197,94,0.30),
+    rgba(56,189,248,0.28)
   );
+  background-size:200% 200%;
 
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
@@ -178,32 +180,83 @@ body{
     inset 0 0 0 1px rgba(255,255,255,.18);
 
   position:relative;
-  animation:float 6s ease-in-out infinite;
+
+  /* animations */
+  animation:
+    gradientMove 12s ease infinite,
+    fadeIn 1.2s ease forwards,
+    float 6s ease-in-out infinite;
+
+  opacity:0; /* for fade-in */
 }
 
-/* ===== SOFT GRADIENT EDGE (NOT STRONG) ===== */
+/* ===== SOFT GRADIENT EDGE ===== */
 .logo-wrap::before{
   content:"";
   position:absolute;
   inset:-2px;
   border-radius:30px;
   background:linear-gradient(135deg,#38bdf8,#22c55e);
-  opacity:.55;
+  opacity:.5;
   z-index:-1;
 }
 
-/* ===== LOGO IMAGE (CLEAR & DOMINANT) ===== */
+/* ===== LOGO IMAGE ===== */
 .hero-logo{
-  width:100px;   /* 👈 logo is the hero */
-  height:100px;
+  width:100px;
+  height:auto;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));
+  transition:filter .35s ease;
 }
 
-/* ===== FLOAT ANIMATION ===== */
+/* ===== GLOW ONLY ON HOVER ===== */
+.logo-wrap:hover{
+  box-shadow:
+    0 0 40px rgba(34,197,94,.45),
+    0 0 80px rgba(56,189,248,.35);
+}
+
+.logo-wrap:hover .hero-logo{
+  filter:
+    drop-shadow(0 0 14px rgba(34,197,94,.8))
+    drop-shadow(0 0 24px rgba(56,189,248,.7));
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes gradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
 @keyframes float{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-6px)}
 }
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(12px) scale(.96);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+/* ===== MOBILE OPTIMIZATION ===== */
+@media(max-width:600px){
+  .logo-wrap{
+    width:110px;
+    height:110px;
+    border-radius:22px;
+  }
+  .hero-logo{
+    width:78px;
+  }
+}
+
 
 
 
