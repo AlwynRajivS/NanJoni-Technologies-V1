@@ -151,47 +151,55 @@ body{
   font-weight:600;
 }
 
-/* ===== LOGO CONTAINER ===== */
+/* ===== LOGO CONTAINER (REFINED) ===== */
 .logo-wrap{
-  display:inline-flex;
+  display:flex;
   align-items:center;
   justify-content:center;
-  width:110px;
-  height:110px;
-  margin-bottom:18px;
-  border-radius:28px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  width:140px;
+  height:140px;
+  margin-bottom:20px;
+  border-radius:26px;
+
+  /* softer glass */
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+
+  /* subtle border instead of heavy bg */
+  border:1px solid rgba(255,255,255,0.15);
+
   box-shadow:
-    0 20px 60px rgba(0,0,0,.6),
-    inset 0 0 0 1px rgba(255,255,255,.18);
+    0 18px 50px rgba(0,0,0,.55);
+
   position:relative;
   animation:float 6s ease-in-out infinite;
 }
 
-/* ===== GRADIENT STROKE ===== */
+/* ===== GRADIENT STROKE (THIN & ELEGANT) ===== */
 .logo-wrap::before{
   content:"";
   position:absolute;
-  inset:-1.5px;
-  border-radius:30px;
-  background:linear-gradient(120deg,#38bdf8,#22c55e,#4ade80);
+  inset:-2px;
+  border-radius:28px;
+  background:linear-gradient(135deg,#38bdf8,#22c55e);
   z-index:-1;
+  opacity:.85;
 }
 
-/* ===== LOGO IMAGE ===== */
+/* ===== BIG LOGO IMAGE ===== */
 .hero-logo{
-  width:64px;
+  width:95px;   /* 👈 LOGO IS BIG NOW */
   height:auto;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,.7));
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
 }
 
 /* ===== FLOAT ANIMATION ===== */
 @keyframes float{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
+  50%{transform:translateY(-8px)}
 }
+
 
 
 .pdf-btn{
