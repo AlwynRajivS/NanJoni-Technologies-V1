@@ -151,54 +151,60 @@ body{
   font-weight:600;
 }
 
-/* ===== LOGO CONTAINER (REFINED) ===== */
+/* ===== LOGO WRAPPER (CENTERED & BLENDED) ===== */
 .logo-wrap{
   display:flex;
   align-items:center;
   justify-content:center;
+
   width:140px;
   height:140px;
-  margin-bottom:20px;
-  border-radius:26px;
+  margin:0 auto 22px;   /* 👈 perfectly centered */
 
-  /* softer glass */
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  border-radius:28px;
 
-  /* subtle border instead of heavy bg */
-  border:1px solid rgba(255,255,255,0.15);
+  /* SAME COLOR FAMILY AS LOGO */
+  background:linear-gradient(
+    135deg,
+    rgba(56,189,248,0.25),
+    rgba(34,197,94,0.28)
+  );
+
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 
   box-shadow:
-    0 18px 50px rgba(0,0,0,.55);
+    0 18px 45px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgba(255,255,255,.18);
 
   position:relative;
   animation:float 6s ease-in-out infinite;
 }
 
-/* ===== GRADIENT STROKE (THIN & ELEGANT) ===== */
+/* ===== SOFT GRADIENT EDGE (NOT STRONG) ===== */
 .logo-wrap::before{
   content:"";
   position:absolute;
   inset:-2px;
-  border-radius:28px;
+  border-radius:30px;
   background:linear-gradient(135deg,#38bdf8,#22c55e);
+  opacity:.55;
   z-index:-1;
-  opacity:.85;
 }
 
-/* ===== BIG LOGO IMAGE ===== */
+/* ===== LOGO IMAGE (CLEAR & DOMINANT) ===== */
 .hero-logo{
-  width:95px;   /* 👈 LOGO IS BIG NOW */
+  width:100px;   /* 👈 logo is the hero */
   height:auto;
-  filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));
 }
 
 /* ===== FLOAT ANIMATION ===== */
 @keyframes float{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
+  50%{transform:translateY(-6px)}
 }
+
 
 
 
