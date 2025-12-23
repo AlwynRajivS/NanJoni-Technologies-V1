@@ -151,6 +151,47 @@ body{
   font-weight:600;
 }
 
+/* ===== LOGO CONTAINER ===== */
+.logo-wrap{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:110px;
+  height:110px;
+  margin-bottom:18px;
+  border-radius:28px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+  position:relative;
+  animation:float 6s ease-in-out infinite;
+}
+
+/* ===== GRADIENT STROKE ===== */
+.logo-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-1.5px;
+  border-radius:30px;
+  background:linear-gradient(120deg,#38bdf8,#22c55e,#4ade80);
+  z-index:-1;
+}
+
+/* ===== LOGO IMAGE ===== */
+.hero-logo{
+  width:64px;
+  height:auto;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.7));
+}
+
+/* ===== FLOAT ANIMATION ===== */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
 
 
 .pdf-btn{
@@ -210,6 +251,9 @@ body{
 <!-- HERO -->
 <section class="hero">
   <div>
+<div class="logo-wrap">
+      <img src="images/logo.png" alt="NanJoni Technologies Logo" class="hero-logo">
+    </div>
     <h1>NanJoni Technologies</h1>
     <p>Transforming academic workflows into effortless digital experiences</p>
   </div>
