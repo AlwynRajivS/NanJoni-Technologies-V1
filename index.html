@@ -133,15 +133,17 @@ body{
 
 /* ===== DESCRIPTION ===== */
 .content{
-    text-align:left;
-    max-width:520px;
-    margin:auto;
-  }
-.content p{
-  font-size:15px;
-  line-height:1.7;
-  opacity:.85;
+  max-width:900px;
+  margin:60px auto;
+  text-align:center;
 }
+
+.content p{
+  font-size:16px;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+  
 .tag{
   display:inline-block;
   margin-top:14px;
@@ -194,6 +196,21 @@ body{
   transform:scale(1.05);
 }
 
+  .pdf-btn{
+  display:inline-block;
+  padding:12px 28px;
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  color:#fff;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:600;
+  transition:.3s ease;
+}
+
+.pdf-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(34,197,94,.35);
+}
 
 /* ===== ANIMATIONS ===== */
 @keyframes float{
@@ -216,6 +233,9 @@ body{
 @media(max-width:600px){
   .hero-logo{
     width:86px;
+  }
+  .content{
+    margin:40px 16px;
   }
 }
 
